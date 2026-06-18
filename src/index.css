@@ -1,26 +1,116 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
 
-* {
+@theme {
+  --color-cream: #FAF8F5;
+  --color-sage: #B5C9C0;
+  --color-rose: #E8C5C8;
+  --color-beige: #EADBC8;
+  --color-buttercream: #F5EBD0;
+  --color-charcoal: #423E3A;
+  --color-honey: #E8C08A;
+
+  --font-serif: "Playfair Display", Georgia, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", serif;
+  --font-sans: "Poppins", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", system-ui, sans-serif;
+  --font-cursive: "Caveat", cursive;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
+  --animate-bounce-soft: bounce-soft 2s ease-in-out infinite;
+  --animate-sparkle: sparkle 1s ease-in-out infinite;
+}
+
+/* Cozy Journal Dot-Grid Paper Background */
+.journal-bg {
+  background-color: #FAF8F5;
+  background-image: radial-gradient(#E6DFD5 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+/* Washi Tape Accent */
+.washi-tape {
+  background: rgba(234, 219, 200, 0.7);
+  backdrop-filter: blur(1px);
+  border-left: 2px dashed rgba(66, 62, 58, 0.15);
+  border-right: 2px dashed rgba(66, 62, 58, 0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+/* Binder Spiral Ring Loop */
+.binder-ring {
+  background: linear-gradient(90deg, #D8D2C4 0%, #EEEEEE 50%, #B8B2A4 100%);
+  box-shadow: -1px 2px 3px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.95; transform: scale(1.02); }
+}
+
+@keyframes bounce-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Global Reset & Aesthetic Enhancements */
+html, body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background: #F8F5F0;
-  color: #3B3836;
-  font-family: 'Poppins', sans-serif;
-}
-
-#root {
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
   min-height: 100vh;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+/* Custom Cozy Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-button {
-  font-family: inherit;
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-beige);
+  border-radius: 99px;
+  border: 2px solid var(--color-cream);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-sage);
+}
+
+/* Typography styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  color: var(--color-charcoal);
+}
+
+/* Base interactive transitions */
+button, input, select, textarea, a {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Cozy card utility */
+.glass-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(234, 219, 200, 0.75);
+  box-shadow: 0 8px 24px -12px rgba(66, 62, 58, 0.06);
+}
+.glass-card:hover {
+  border-color: rgba(181, 201, 192, 0.9);
+  box-shadow: 0 12px 30px -8px rgba(66, 62, 58, 0.09);
 }
