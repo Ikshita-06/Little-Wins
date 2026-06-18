@@ -13,7 +13,7 @@ const getTodayStr = (date = new Date()) => {
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState('dashboard');
-  
+
   // Date Simulator state for testing/viewing logs on different days
   const [simulatedDate, setSimulatedDate] = useState(getTodayStr());
 
@@ -114,22 +114,22 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-cream text-charcoal font-sans selection:bg-rose/30">
-      
+
       {/* Sidebar Navigation */}
-      <Sidebar 
-        currentTab={currentTab} 
-        setCurrentTab={setCurrentTab} 
-        profile={{...profile, periods}} 
+      <Sidebar
+        currentTab={currentTab}
+        setCurrentTab={setCurrentTab}
+        profile={{ ...profile, periods }}
       />
 
       {/* Main Layout Area */}
       <div className="md:pl-64 min-h-screen flex flex-col relative">
-        
+
         {/* Binder Spiral Loops (Desktop only) */}
         <div className="hidden md:flex absolute left-[246px] top-12 bottom-12 w-6 flex-col justify-around py-8 pointer-events-none z-50">
           {[...Array(14)].map((_, i) => (
-            <div 
-              key={i} 
+            <div
+              key={i}
               className="w-10 h-3 rounded-full binder-ring -ml-3 opacity-90 transition-transform hover:scale-105 duration-300"
               style={{ transform: `rotate(${Math.sin(i) * 3}deg)` }}
             ></div>
@@ -138,9 +138,9 @@ export default function App() {
 
         {/* Notebook Style Paper Container */}
         <div className="flex-1 flex flex-col bg-white md:m-6 md:ml-8 md:rounded-3xl border border-beige/60 shadow-lg relative overflow-hidden">
-          
+
           {/* Vertical Pink Notebook Margin Line (Desktop only) */}
-          <div className="hidden md:block absolute left-12 top-0 bottom-0 w-[1px] bg-rose/25 pointer-events-none"></div>
+          <div className="hidden md:block absolute left-12 top-0 bottom-0 w-[1px] bg-rose/40 pointer-events-none"></div>
 
           {/* Top bar with developer date picker simulator */}
           <div className="hidden md:flex items-center justify-between pl-16 pr-8 py-4 border-b border-beige/40 bg-white/50 backdrop-blur-xs select-none">
@@ -152,8 +152,8 @@ export default function App() {
               <span className="text-xs text-charcoal/50 bg-buttercream/50 border border-beige/50 px-2.5 py-1 rounded-md font-medium">
                 📖 Journal Date:
               </span>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 value={simulatedDate}
                 onChange={(e) => setSimulatedDate(e.target.value)}
                 className="text-xs bg-white border border-beige rounded-lg px-2 py-1 outline-hidden cursor-pointer hover:border-sage focus:border-sage"
@@ -166,8 +166,8 @@ export default function App() {
             <span>{currentDayName}, {simulatedDate}</span>
             <div className="flex items-center gap-1.5">
               <span>Page:</span>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 value={simulatedDate}
                 onChange={(e) => setSimulatedDate(e.target.value)}
                 className="bg-white border border-beige rounded-md px-1.5 py-0.5 outline-hidden"
@@ -177,81 +177,81 @@ export default function App() {
 
           {/* Content Area (Shifted slightly right on desktop to align with margin) */}
           <main className="flex-1 pb-20 md:pb-8 md:pl-8">
-          {currentTab === 'dashboard' && (
-            <Dashboard 
-              profile={profile} 
-              setProfile={setProfile} 
-              simulatedDate={simulatedDate} 
-              currentDayName={currentDayName}
-              waterLog={waterLog}
-              setWaterLog={setWaterLog}
-              nutritionLog={nutritionLog}
-              workoutLog={workoutLog}
-              dailyCheckIns={dailyCheckIns}
-              setCurrentTab={setCurrentTab}
-            />
-          )}
+            {currentTab === 'dashboard' && (
+              <Dashboard
+                profile={profile}
+                setProfile={setProfile}
+                simulatedDate={simulatedDate}
+                currentDayName={currentDayName}
+                waterLog={waterLog}
+                setWaterLog={setWaterLog}
+                nutritionLog={nutritionLog}
+                workoutLog={workoutLog}
+                dailyCheckIns={dailyCheckIns}
+                setCurrentTab={setCurrentTab}
+              />
+            )}
 
-          {currentTab === 'workouts' && (
-            <Workouts 
-              profile={profile} 
-              setProfile={setProfile} 
-              periods={periods}
-              setPeriods={setPeriods}
-              simulatedDate={simulatedDate} 
-              currentDayName={currentDayName}
-              workoutLog={workoutLog}
-              setWorkoutLog={setWorkoutLog}
-            />
-          )}
+            {currentTab === 'workouts' && (
+              <Workouts
+                profile={profile}
+                setProfile={setProfile}
+                periods={periods}
+                setPeriods={setPeriods}
+                simulatedDate={simulatedDate}
+                currentDayName={currentDayName}
+                workoutLog={workoutLog}
+                setWorkoutLog={setWorkoutLog}
+              />
+            )}
 
-          {currentTab === 'nutrition' && (
-            <Nutrition 
-              profile={profile} 
-              setProfile={setProfile} 
-              simulatedDate={simulatedDate} 
-              nutritionLog={nutritionLog}
-              setNutritionLog={setNutritionLog}
-              waterLog={waterLog}
-              setWaterLog={setWaterLog}
-            />
-          )}
+            {currentTab === 'nutrition' && (
+              <Nutrition
+                profile={profile}
+                setProfile={setProfile}
+                simulatedDate={simulatedDate}
+                nutritionLog={nutritionLog}
+                setNutritionLog={setNutritionLog}
+                waterLog={waterLog}
+                setWaterLog={setWaterLog}
+              />
+            )}
 
-          {currentTab === 'progress' && (
-            <ProgressTracker 
-              profile={profile} 
-              setProfile={setProfile} 
-              measurementsLog={measurementsLog}
-              setMeasurementsLog={setMeasurementsLog}
-              simulatedDate={simulatedDate}
-            />
-          )}
+            {currentTab === 'progress' && (
+              <ProgressTracker
+                profile={profile}
+                setProfile={setProfile}
+                measurementsLog={measurementsLog}
+                setMeasurementsLog={setMeasurementsLog}
+                simulatedDate={simulatedDate}
+              />
+            )}
 
-          {currentTab === 'checkin' && (
-            <DailyCheckIn 
-              profile={profile} 
-              setProfile={setProfile} 
-              periods={periods}
-              setPeriods={setPeriods}
-              simulatedDate={simulatedDate} 
-              dailyCheckIns={dailyCheckIns}
-              setDailyCheckIns={setDailyCheckIns}
-              waterLog={waterLog}
-              setWaterLog={setWaterLog}
-              workoutLog={workoutLog}
-              setWorkoutLog={setWorkoutLog}
-              nutritionLog={nutritionLog}
-              setNutritionLog={setNutritionLog}
-            />
-          )}
+            {currentTab === 'checkin' && (
+              <DailyCheckIn
+                profile={profile}
+                setProfile={setProfile}
+                periods={periods}
+                setPeriods={setPeriods}
+                simulatedDate={simulatedDate}
+                dailyCheckIns={dailyCheckIns}
+                setDailyCheckIns={setDailyCheckIns}
+                waterLog={waterLog}
+                setWaterLog={setWaterLog}
+                workoutLog={workoutLog}
+                setWorkoutLog={setWorkoutLog}
+                nutritionLog={nutritionLog}
+                setNutritionLog={setNutritionLog}
+              />
+            )}
 
-          {currentTab === 'badges' && (
-            <Badges 
-              unlockedBadges={unlockedBadges}
-              setUnlockedBadges={setUnlockedBadges}
-            />
-          )}
-        </main>
+            {currentTab === 'badges' && (
+              <Badges
+                unlockedBadges={unlockedBadges}
+                setUnlockedBadges={setUnlockedBadges}
+              />
+            )}
+          </main>
         </div>
       </div>
     </div>

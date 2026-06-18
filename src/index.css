@@ -90,7 +90,7 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-sage);
+  background: var(--color-rose);
 }
 
 /* Typography styles */
@@ -107,10 +107,10 @@ button, input, select, textarea, a {
 /* Cozy card utility */
 .glass-card {
   background: #FFFFFF;
-  border: 1px solid rgba(234, 219, 200, 0.75);
-  box-shadow: 0 8px 24px -12px rgba(66, 62, 58, 0.06);
+  border: 1px solid rgba(232, 197, 200, 0.65); /* Soft rose border */
+  box-shadow: 0 8px 24px -12px rgba(66, 62, 58, 0.05);
 }
 .glass-card:hover {
-  border-color: rgba(181, 201, 192, 0.9);
-  box-shadow: 0 12px 30px -8px rgba(66, 62, 58, 0.09);
+  border-color: rgba(232, 197, 200, 0.95); /* Pink hover border */
+  box-shadow: 0 12px 30px -8px rgba(232, 197, 200, 0.15); /* Pink hover glow */
 }

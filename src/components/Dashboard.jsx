@@ -51,7 +51,7 @@ export default function Dashboard({
 
   // Mock list of today's quick goals
   const todayTasks = [
-    { id: 'water', label: 'Stay hydrated(3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
+    { id: 'water', label: 'Stay hydrated (6 drops/3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
     { id: 'workout', label: `Workout: ${currentDayName} Routine`, completed: todayWorkout.completed, icon: Dumbbell, color: 'text-sage bg-sage/10' },
     { id: 'checkin', label: 'Daily mood & energy check-in', completed: !!todayCheckIn, icon: Heart, color: 'text-rose bg-rose/10' },
     { id: 'meals', label: 'Log three major meals', completed: todayNutrition.breakfast && todayNutrition.lunch && todayNutrition.dinner, icon: Sparkles, color: 'text-honey bg-honey/10' },
@@ -77,7 +77,7 @@ export default function Dashboard({
           <p className="text-sm md:text-base text-charcoal/70 font-sans max-w-md">
             {quote}
           </p>
-          <div className="font-cursive text-2xl text-sage/80 pt-1">
+          <div className="font-cursive text-2xl text-rose/85 pt-1">
             ~ you're doing so wonderful today! 🫧
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function Dashboard({
               <div className="space-y-1">
                 <div className="text-3xl font-serif text-charcoal flex items-center gap-2">
                   <span className="text-4xl leading-none">{todayCheckIn.mood || "🙂"}</span>
-                  <span className="text-xs bg-sage/20 text-charcoal px-2 py-0.5 rounded-full font-medium">
+                  <span className="text-xs bg-rose/25 text-charcoal px-2 py-0.5 rounded-full font-medium">
                     Energy: {todayCheckIn.energy}/10
                   </span>
                 </div>
@@ -134,7 +134,7 @@ export default function Dashboard({
             )}
           </div>
 
-          <span className="text-[10px] text-sage font-medium italic group-hover:underline">
+          <span className="text-[10px] text-rose font-medium italic group-hover:underline">
             {todayCheckIn ? "✦ Tap to edit check-in" : "✦ Mind-body harmony"}
           </span>
         </button>
@@ -203,7 +203,7 @@ export default function Dashboard({
               Completed today
             </div>
           </div>
-          <span className="text-[17px] text-sage font-medium font-cursive">
+          <span className="text-[17px] text-rose font-medium font-cursive">
             {completedWins === 4 ? "A perfect day! 🌷" : "Slow progress is progress!"}
           </span>
         </div>
@@ -238,8 +238,8 @@ export default function Dashboard({
                   <div
                     key={task.id}
                     className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${task.completed
-                        ? 'bg-cream/40 border-beige/40 opacity-80'
-                        : 'bg-white border-beige/30 hover:border-rose/30 shadow-2xs'
+                      ? 'bg-cream/40 border-beige/40 opacity-80'
+                      : 'bg-white border-beige/30 hover:border-rose/30 shadow-2xs'
                       }`}
                   >
                     <div className="flex items-center gap-3">
@@ -253,8 +253,8 @@ export default function Dashboard({
 
                     {/* Cute check circular dot */}
                     <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${task.completed
-                        ? 'bg-sage border-sage text-white'
-                        : 'border-beige hover:border-rose bg-white'
+                      ? 'bg-rose border-rose text-white'
+                      : 'border-beige hover:border-rose bg-white'
                       }`}>
                       {task.completed && <span className="text-[10px] leading-none">✓</span>}
                     </div>
@@ -309,7 +309,7 @@ export default function Dashboard({
           </div>
 
           {/* Sticky Note Posture Reminder */}
-          <div className="bg-buttercream/60 rounded-3xl p-6 border border-beige/40 shadow-xs relative flex flex-col justify-between hover:shadow-sm transition-all duration-300">
+          <div className="bg-rose/35 rounded-3xl p-6 border border-rose/25 shadow-xs relative flex flex-col justify-between hover:shadow-sm transition-all duration-300">
             <div className="washi-tape absolute top-[-8px] left-1/2 transform -translate-x-1/2 w-20 h-5 rotate-[1deg] opacity-70 bg-rose/40"></div>
 
             <div className="space-y-2">
