@@ -2,6 +2,25 @@ import React, { useState } from 'react';
 import { Sparkles, Flame, Droplet, Dumbbell, Calendar, Heart, Award, ArrowRight } from 'lucide-react';
 import { getRandomQuote } from '../data/quotes';
 
+const COZY_STICKY_NOTES = [
+  "You are doing so well, lovely! Remember to take a deep breath and sip some water. You've got this! 🌸✨",
+  "Small steps still take you forward. Be proud of yourself for showing up today. You are worthy of love and rest! 🧸🤍",
+  "A little progress is still progress! Be gentle with your heart today, you're doing the best you can. ☁️🌷",
+  "Don't forget to stretch your arms, look out the window, and smile! You are an absolute star! 🌟🧸",
+  "You deserve a cozy break today. Snuggle up, drink some warm tea, and celebrate your little wins! 🍵🌸",
+  "Remember to be kind to your mind today. You don't have to be perfect to be amazing. 🫧🤍"
+];
+
+const getStickyNoteForDate = (dateStr) => {
+  if (!dateStr) return COZY_STICKY_NOTES[0];
+  let hash = 0;
+  for (let i = 0; i < dateStr.length; i++) {
+    hash = dateStr.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % COZY_STICKY_NOTES.length;
+  return COZY_STICKY_NOTES[index];
+};
+
 export default function Dashboard({
   profile,
   setProfile,
@@ -15,6 +34,7 @@ export default function Dashboard({
   setCurrentTab
 }) {
   const [quote] = useState(getRandomQuote());
+  const stickyNote = getStickyNoteForDate(simulatedDate);
 
   // Get data for today
   const todayWater = waterLog[simulatedDate] || 0;
@@ -31,7 +51,7 @@ export default function Dashboard({
 
   // Mock list of today's quick goals
   const todayTasks = [
-    { id: 'water', label: 'Stay hydrated (6 drops/3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
+    { id: 'water', label: 'Stay hydrated(3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
     { id: 'workout', label: `Workout: ${currentDayName} Routine`, completed: todayWorkout.completed, icon: Dumbbell, color: 'text-sage bg-sage/10' },
     { id: 'checkin', label: 'Daily mood & energy check-in', completed: !!todayCheckIn, icon: Heart, color: 'text-rose bg-rose/10' },
     { id: 'meals', label: 'Log three major meals', completed: todayNutrition.breakfast && todayNutrition.lunch && todayNutrition.dinner, icon: Sparkles, color: 'text-honey bg-honey/10' },
@@ -76,17 +96,20 @@ export default function Dashboard({
       {/* Grid of Main Dashboard Status Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        {/* Today's Vibe Card (Replaced repeated Phase card to avoid duplication) */}
-        <div className="relative glass-card p-6 rounded-2xl flex flex-col justify-between h-40 hover:-translate-y-0.5 transition-all duration-300">
+        {/* Today's Vibe Card */}
+        <button
+          onClick={() => setCurrentTab('checkin')}
+          className="relative glass-card p-6 rounded-2xl flex flex-col justify-between h-40 hover:-translate-y-0.5 transition-all duration-300 text-left w-full cursor-pointer group"
+        >
           {/* Washi Tape */}
           <div className="washi-tape absolute top-[-6px] left-1/2 transform -translate-x-1/2 w-16 h-4 rotate-[-1deg] opacity-60"></div>
 
-          <div className="flex items-center justify-between text-charcoal/60">
-            <span className="text-xs uppercase font-semibold tracking-wider">Today's Vibe</span>
+          <div className="flex items-center justify-between text-charcoal/60 w-full">
+            <span className="text-xs uppercase font-semibold tracking-wider group-hover:text-rose transition-colors">Today's Vibe</span>
             <span className="text-sm">☁️</span>
           </div>
 
-          <div className="my-2">
+          <div className="my-2 w-full">
             {todayCheckIn ? (
               <div className="space-y-1">
                 <div className="text-3xl font-serif text-charcoal flex items-center gap-2">
@@ -100,24 +123,21 @@ export default function Dashboard({
                 </div>
               </div>
             ) : (
-              <button
-                onClick={() => setCurrentTab('checkin')}
-                className="text-left w-full select-none focus:outline-hidden hover:opacity-85 transition-opacity group"
-              >
+              <div className="select-none">
                 <div className="text-lg font-serif text-charcoal leading-snug group-hover:text-rose font-bold">
                   Log mood & vibe 🫶
                 </div>
                 <div className="text-[10px] text-charcoal/50 mt-0.5">
                   Tap to check-in for today
                 </div>
-              </button>
+              </div>
             )}
           </div>
 
-          <span className="text-[10px] text-sage font-medium italic">
-            ✦ Mind-body harmony
+          <span className="text-[10px] text-sage font-medium italic group-hover:underline">
+            {todayCheckIn ? "✦ Tap to edit check-in" : "✦ Mind-body harmony"}
           </span>
-        </div>
+        </button>
 
         {/* Workout Streak Card */}
         <div className="relative glass-card p-6 rounded-2xl flex flex-col justify-between h-40 hover:-translate-y-0.5 transition-all duration-300">
@@ -298,7 +318,7 @@ export default function Dashboard({
                 <span className="text-sm">🧸</span>
               </h4>
               <p className="text-[19px] font-cursive text-charcoal/80 leading-relaxed pt-1">
-                "Small wins are still wins. Taking care of your posture and wrists today will help you feel much stronger tomorrow. Be gentle with your body! 🤍"
+                "{stickyNote}"
               </p>
             </div>
 

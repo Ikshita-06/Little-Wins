@@ -24,7 +24,7 @@ export default function Sidebar({ currentTab, setCurrentTab, profile }) {
   return (
     <>
       {/* Desktop Sidebar (hidden on mobile) */}
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-beige/60 min-h-screen p-6 fixed left-0 top-0 text-[#423E3A]">
+      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-beige/60 min-h-screen p-6 fixed left-0 top-0 text-[#423E3A] z-30">
         {/* Logo & Tagline */}
         <div className="mb-8 select-none">
           <div className="flex items-center gap-2 mb-1">
