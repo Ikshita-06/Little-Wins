@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Smile, 
-  Heart, 
-  Droplet, 
-  Dumbbell, 
-  ChefHat, 
-  Save, 
-  Plus, 
-  Minus, 
-  Check, 
+import {
+  Smile,
+  Heart,
+  Droplet,
+  Dumbbell,
+  ChefHat,
+  Save,
+  Plus,
+  Minus,
+  Check,
   Calendar,
   Sparkles,
   Coffee
@@ -27,7 +27,8 @@ export default function DailyCheckIn({
   workoutLog,
   setWorkoutLog,
   nutritionLog,
-  setNutritionLog
+  setNutritionLog,
+  isEditable
 }) {
   // Local states for the current form inputs
   const [selectedMood, setSelectedMood] = useState('');
@@ -35,7 +36,7 @@ export default function DailyCheckIn({
   const [appetite, setAppetite] = useState(5);
   const [isOnPeriod, setIsOnPeriod] = useState(false);
   const [notes, setNotes] = useState('');
-  
+
   // Local state drafts for the water, workouts, and nutrition logs
   const [draftWater, setDraftWater] = useState(0);
   const [draftWorkout, setDraftWorkout] = useState({ completed: false });
@@ -71,6 +72,7 @@ export default function DailyCheckIn({
   // Handle saving the check-in details
   const handleSaveCheckIn = (e) => {
     e.preventDefault();
+    if (!isEditable) return;
 
     // 1. Update dailyCheckIns state
     setDailyCheckIns({
@@ -102,7 +104,7 @@ export default function DailyCheckIn({
     // 4. Update global workoutLog state and update workout streak
     const wasWorkoutCompleted = workoutLog[simulatedDate]?.completed || false;
     const isWorkoutCompleted = draftWorkout.completed;
-    
+
     setWorkoutLog({
       ...workoutLog,
       [simulatedDate]: draftWorkout
@@ -136,6 +138,7 @@ export default function DailyCheckIn({
 
   // Handle clearing/undoing the check-in details
   const handleClearCheckIn = () => {
+    if (!isEditable) return;
     // 1. Reset local form and draft states
     setSelectedMood('');
     setEnergy(5);
@@ -217,7 +220,7 @@ export default function DailyCheckIn({
 
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto space-y-8 select-none">
-      
+
       {/* Warm Header Block */}
       <div className="relative rounded-3xl overflow-hidden glass-card p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="washi-tape absolute top-0 left-10 w-24 h-5 rotate-[-1.5deg] opacity-75"></div>
@@ -250,18 +253,18 @@ export default function DailyCheckIn({
 
       {/* Main Grid: Form Left, Quick Logs Right */}
       <form onSubmit={handleSaveCheckIn} className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        
+
         {/* Left Column (3 cols): Vibe, Mood, energy, notes */}
         <div className="lg:col-span-3 space-y-6">
-          
+
           {/* Mood Section */}
           <div className="glass-card rounded-3xl p-6 relative">
             <div className="washi-tape absolute top-[-6px] left-8 w-16 h-4 rotate-[1deg] opacity-60"></div>
             <h3 className="text-lg font-serif mb-4 flex items-center gap-2">
               <span>How is your mood today?</span>
-              <span className="text-sm">🧸</span>
+              <span className="text-sm">🤍</span>
             </h3>
-            
+
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
               {moodOptions.map((opt) => {
                 const isActive = selectedMood === opt.emoji;
@@ -269,12 +272,14 @@ export default function DailyCheckIn({
                   <button
                     key={opt.label}
                     type="button"
-                    onClick={() => setSelectedMood(opt.emoji)}
+                    onClick={() => isEditable && setSelectedMood(opt.emoji)}
                     className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border text-center transition-all ${
-                      isActive 
-                        ? `${opt.activeColor} text-charcoal scale-102 ring-2 font-bold shadow-xs` 
-                        : 'bg-[#FAF8F5]/60 hover:bg-[#F5EBD0]/30 border-beige/40 text-charcoal/80'
-                    }`}
+                      !isEditable
+                        ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed select-none'
+                        : isActive
+                          ? `${opt.activeColor} text-charcoal scale-102 ring-2 font-bold shadow-xs`
+                          : 'bg-[#FAF8F5]/60 hover:bg-[#F5EBD0]/30 border-beige/40 text-charcoal/80'
+                      }`}
                   >
                     <span className="text-3.5xl mb-1.5 filter drop-shadow-xs transition-transform hover:scale-115 duration-300">
                       {opt.emoji}
@@ -304,13 +309,14 @@ export default function DailyCheckIn({
                     {energy} / 10
                   </span>
                 </div>
-                <input 
-                  type="range" 
-                  min="1" 
-                  max="10" 
-                  value={energy} 
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={energy}
+                  disabled={!isEditable}
                   onChange={(e) => setEnergy(e.target.value)}
-                  className="w-full accent-sage h-1.5 bg-cream rounded-lg cursor-pointer"
+                  className={`w-full accent-sage h-1.5 rounded-lg ${!isEditable ? 'cursor-not-allowed opacity-50 bg-cream' : 'cursor-pointer bg-cream'}`}
                 />
                 <div className="flex justify-between text-[10px] text-charcoal/40 italic">
                   <span>Tired / Exhausted</span>
@@ -326,13 +332,14 @@ export default function DailyCheckIn({
                     {appetite} / 10
                   </span>
                 </div>
-                <input 
-                  type="range" 
-                  min="1" 
-                  max="10" 
-                  value={appetite} 
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={appetite}
+                  disabled={!isEditable}
                   onChange={(e) => setAppetite(e.target.value)}
-                  className="w-full accent-rose h-1.5 bg-cream rounded-lg cursor-pointer"
+                  className={`w-full accent-rose h-1.5 rounded-lg ${!isEditable ? 'cursor-not-allowed opacity-50 bg-cream' : 'cursor-pointer bg-cream'}`}
                 />
                 <div className="flex justify-between text-[10px] text-charcoal/40 italic">
                   <span>Low appetite</span>
@@ -345,7 +352,7 @@ export default function DailyCheckIn({
           {/* Period Tracker & Notes */}
           <div className="glass-card rounded-3xl p-6 relative">
             <div className="washi-tape absolute top-[-6px] left-12 w-20 h-4 rotate-[-1deg] opacity-60"></div>
-            
+
             <div className="flex items-center justify-between pb-4 border-b border-beige/40 mb-4">
               <div className="space-y-0.5">
                 <h4 className="text-md font-serif font-bold text-charcoal flex items-center gap-1.5">
@@ -356,12 +363,14 @@ export default function DailyCheckIn({
               </div>
               <button
                 type="button"
-                onClick={() => setIsOnPeriod(!isOnPeriod)}
+                onClick={() => isEditable && setIsOnPeriod(!isOnPeriod)}
                 className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-all ${
-                  isOnPeriod 
-                    ? 'bg-rose/20 border-rose text-charcoal shadow-2xs font-bold' 
-                    : 'bg-white border-beige/40 text-charcoal/60 hover:border-rose/30'
-                }`}
+                  !isEditable
+                    ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed'
+                    : isOnPeriod
+                      ? 'bg-rose/20 border-rose text-charcoal shadow-2xs font-bold'
+                      : 'bg-white border-beige/40 text-charcoal/60 hover:border-rose/30'
+                  }`}
               >
                 <span>{isOnPeriod ? 'On Period 🧸' : 'Off Period ☁️'}</span>
               </button>
@@ -375,9 +384,12 @@ export default function DailyCheckIn({
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Write down a happy moment, physical symptoms, gratitude, or a letter to yourself..."
+                disabled={!isEditable}
+                placeholder={isEditable ? "Write down a happy moment, physical symptoms, gratitude, or a letter to yourself..." : "No daily reflections were recorded."}
                 rows="4"
-                className="w-full bg-cream/30 border border-beige/40 rounded-2xl p-4 text-sm outline-hidden focus:border-sage focus:ring-1 focus:ring-sage/20 placeholder-charcoal/30 font-cursive text-lg leading-relaxed"
+                className={`w-full bg-cream/30 border border-beige/40 rounded-2xl p-4 text-sm outline-hidden focus:ring-1 focus:ring-sage/20 placeholder-charcoal/30 font-cursive text-lg leading-relaxed ${
+                  !isEditable ? 'cursor-not-allowed text-charcoal/60' : 'focus:border-sage'
+                }`}
               />
             </div>
           </div>
@@ -386,7 +398,7 @@ export default function DailyCheckIn({
 
         {/* Right Column (2 cols): Water quick logs, workouts, and nutrition logs */}
         <div className="lg:col-span-2 space-y-6">
-          
+
           {/* Quick Water Tracker Card */}
           <div className="glass-card rounded-3xl p-6 relative">
             <div className="washi-tape absolute top-[-6px] left-10 w-16 h-4 rotate-[1.5deg] opacity-60 bg-blue-100"></div>
@@ -408,8 +420,10 @@ export default function DailyCheckIn({
                   <button
                     key={i}
                     type="button"
-                    onClick={() => handleWaterBubbleClick(i)}
-                    className="text-2xl hover:scale-120 active:scale-95 transition-transform select-none focus:outline-hidden cursor-pointer"
+                    onClick={() => isEditable && handleWaterBubbleClick(i)}
+                    className={`text-3xl select-none focus:outline-hidden ${
+                      isEditable ? 'hover:scale-120 active:scale-95 transition-transform cursor-pointer' : 'cursor-not-allowed opacity-60'
+                    }`}
                   >
                     {filled ? '💧' : '🫧'}
                   </button>
@@ -430,12 +444,14 @@ export default function DailyCheckIn({
 
             <button
               type="button"
-              onClick={handleWorkoutToggle}
+              onClick={() => isEditable && handleWorkoutToggle()}
               className={`w-full py-4 px-5 rounded-2.5xl border transition-all text-left flex items-center justify-between ${
-                draftWorkout.completed 
-                  ? 'bg-sage/25 border-sage text-charcoal shadow-2xs font-semibold' 
-                  : 'bg-white border-beige/40 text-charcoal/60 hover:border-sage/40'
-              }`}
+                !isEditable
+                  ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed'
+                  : draftWorkout.completed
+                    ? 'bg-sage/25 border-sage text-charcoal shadow-2xs font-semibold'
+                    : 'bg-white border-beige/40 text-charcoal/60 hover:border-sage/40'
+                }`}
             >
               <div className="space-y-0.5">
                 <div className="text-sm font-bold">
@@ -445,11 +461,10 @@ export default function DailyCheckIn({
                   {draftWorkout.completed ? 'Click to undo and remove streak' : 'Click to complete today\'s routine'}
                 </div>
               </div>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center border transition-all ${
-                draftWorkout.completed 
-                  ? 'bg-sage border-sage text-white' 
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center border transition-all ${draftWorkout.completed
+                  ? 'bg-sage border-sage text-white'
                   : 'border-beige hover:border-sage bg-white'
-              }`}>
+                }`}>
                 {draftWorkout.completed && <Check className="w-3.5 h-3.5" />}
               </div>
             </button>
@@ -475,19 +490,20 @@ export default function DailyCheckIn({
                   <button
                     key={meal.key}
                     type="button"
-                    onClick={() => handleMealToggle(meal.key)}
+                    onClick={() => isEditable && handleMealToggle(meal.key)}
                     className={`w-full p-3.5 rounded-xl border text-left flex items-center justify-between transition-all ${
-                      checked 
-                        ? 'bg-[#E8C08A]/20 border-honey text-charcoal shadow-2xs font-medium' 
-                        : 'bg-white border-beige/30 text-charcoal/60 hover:border-honey/30'
-                    }`}
+                      !isEditable
+                        ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed'
+                        : checked
+                          ? 'bg-[#E8C08A]/20 border-honey text-charcoal shadow-2xs font-medium'
+                          : 'bg-white border-beige/30 text-charcoal/60 hover:border-honey/30'
+                      }`}
                   >
                     <span className="text-xs font-semibold">{meal.label}</span>
-                    <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${
-                      checked 
-                        ? 'bg-honey border-honey text-white' 
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${checked
+                        ? 'bg-honey border-honey text-white'
                         : 'border-beige hover:border-honey bg-white'
-                    }`}>
+                      }`}>
                       {checked && <Check className="w-3 h-3" />}
                     </div>
                   </button>
@@ -497,17 +513,27 @@ export default function DailyCheckIn({
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-2 flex gap-3">
+          <div className="pt-2 flex gap-3 w-full">
             <button
               type="button"
               onClick={handleClearCheckIn}
-              className="flex-1 py-4 bg-white hover:bg-cream text-charcoal font-serif font-bold rounded-2.5xl flex items-center justify-center gap-2 border border-beige/60 shadow-xs hover:shadow-sm transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+              disabled={!isEditable}
+              className={`flex-1 py-4 font-serif font-bold rounded-2.5xl flex items-center justify-center gap-2 border transition-all ${
+                !isEditable
+                  ? 'bg-cream text-charcoal/40 border-beige/40 cursor-not-allowed'
+                  : 'bg-white hover:bg-cream text-charcoal border-beige/60 shadow-xs hover:shadow-sm transform hover:-translate-y-0.5 active:translate-y-0'
+              }`}
             >
               <span>Clear Page ☁️</span>
             </button>
             <button
               type="submit"
-              className="flex-[2] py-4 bg-rose hover:bg-[#E8C5C8]/90 text-charcoal font-serif font-bold rounded-2.5xl flex items-center justify-center gap-2 border border-rose/30 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+              disabled={!isEditable}
+              className={`flex-[2] py-4 font-serif font-bold rounded-2.5xl flex items-center justify-center gap-2 border transition-all ${
+                !isEditable
+                  ? 'bg-cream text-charcoal/40 border-beige/40 cursor-not-allowed'
+                  : 'bg-rose hover:bg-[#E8C5C8]/90 text-charcoal border-rose/30 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0'
+              }`}
             >
               <Save className="w-5 h-5" />
               <span>Save Daily Page 🌸</span>

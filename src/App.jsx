@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import Workouts from './components/Workouts';
@@ -8,7 +8,10 @@ import DailyCheckIn from './components/DailyCheckIn';
 import Badges from './components/Badges';
 
 const getTodayStr = (date = new Date()) => {
-  return date.toISOString().split('T')[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
 export default function App() {
@@ -16,6 +19,32 @@ export default function App() {
 
   // Date Simulator state for testing/viewing logs on different days
   const [simulatedDate, setSimulatedDate] = useState(getTodayStr());
+
+  // Track the actual current calendar day to detect midnight rollovers
+  const realTodayRef = useRef(getTodayStr());
+
+  // Auto-update simulatedDate to new day at midnight (only if it was set to today's date previously)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newTodayStr = getTodayStr();
+      
+      // If midnight has passed (the calendar date has changed)
+      if (newTodayStr !== realTodayRef.current) {
+        const oldTodayStr = realTodayRef.current;
+        realTodayRef.current = newTodayStr;
+        
+        setSimulatedDate(prev => {
+          // Only auto-advance if the user was currently looking at the active "today" page
+          if (prev === oldTodayStr) {
+            return newTodayStr;
+          }
+          return prev;
+        });
+      }
+    }, 10000); // Check every 10 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   // --- LOCALSTORAGE SYNCED STATES ---
   const [profile, setProfile] = useState(() => {
@@ -112,6 +141,20 @@ export default function App() {
 
   const currentDayName = getDayOfWeek();
 
+  // A journal page is editable if it represents today or yesterday in local time
+  const checkIfDateIsEditable = (dateStr) => {
+    const today = new Date();
+    const todayStr = getTodayStr(today);
+    
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = getTodayStr(yesterday);
+    
+    return dateStr === todayStr || dateStr === yesterdayStr;
+  };
+
+  const isEditable = checkIfDateIsEditable(simulatedDate);
+
   return (
     <div className="min-h-screen bg-cream text-charcoal font-sans selection:bg-rose/30">
 
@@ -162,8 +205,10 @@ export default function App() {
           </div>
 
           {/* Mobile-only Date simulator info bar */}
-          <div className="md:hidden flex items-center justify-between px-4 py-2 bg-white/70 border-b border-beige/30 text-xs select-none">
-            <span>{currentDayName}, {simulatedDate}</span>
+          <div className="md:hidden flex items-center justify-between px-4 py-2 bg-white/70 border-b border-beige/30 text-xs select-none font-semibold">
+            <span className="flex items-center gap-1.5">
+              {currentDayName}, {simulatedDate}
+            </span>
             <div className="flex items-center gap-1.5">
               <span>Page:</span>
               <input
@@ -202,6 +247,7 @@ export default function App() {
                 currentDayName={currentDayName}
                 workoutLog={workoutLog}
                 setWorkoutLog={setWorkoutLog}
+                isEditable={isEditable}
               />
             )}
 
@@ -214,6 +260,7 @@ export default function App() {
                 setNutritionLog={setNutritionLog}
                 waterLog={waterLog}
                 setWaterLog={setWaterLog}
+                isEditable={isEditable}
               />
             )}
 
@@ -242,6 +289,7 @@ export default function App() {
                 setWorkoutLog={setWorkoutLog}
                 nutritionLog={nutritionLog}
                 setNutritionLog={setNutritionLog}
+                isEditable={isEditable}
               />
             )}
 

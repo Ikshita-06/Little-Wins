@@ -21,7 +21,8 @@ export default function Workouts({
   simulatedDate,
   currentDayName,
   workoutLog,
-  setWorkoutLog
+  setWorkoutLog,
+  isEditable
 }) {
   // Navigation: state to track which day is currently being viewed/selected
   const [selectedDay, setSelectedDay] = useState(currentDayName);
@@ -59,7 +60,7 @@ export default function Workouts({
 
   // Toggle individual exercise completion state
   const handleExerciseToggle = (exerciseName) => {
-    if (!isActiveDay) return; // Only allow logging on the simulated today
+    if (!isActiveDay || !isEditable) return; // Only allow logging on the simulated today and when editable
 
     const updatedCompleted = { ...completedExercises };
     const wasChecked = !!updatedCompleted[exerciseName];
@@ -96,6 +97,7 @@ export default function Workouts({
 
   // Toggle individual posture exercise completion state
   const handlePostureToggle = (exerciseName) => {
+    if (!isEditable) return;
     const updatedPosture = { ...completedPosture };
     const wasChecked = !!updatedPosture[exerciseName];
 
@@ -116,7 +118,7 @@ export default function Workouts({
 
   // Log entire workout done in one tap
   const handleToggleBulkComplete = () => {
-    if (!isActiveDay) return;
+    if (!isActiveDay || !isEditable) return;
 
     const wasCompleted = activeLog.completed || false;
     const nextCompleted = !wasCompleted;
@@ -319,13 +321,15 @@ export default function Workouts({
                           return (
                             <div
                               key={ex.name}
-                              onClick={() => isActiveDay && handleExerciseToggle(ex.name)}
+                              onClick={() => isActiveDay && isEditable && handleExerciseToggle(ex.name)}
                               className={`p-4 rounded-2xl border flex items-center justify-between transition-all select-none ${
                                 !isActiveDay 
                                   ? 'bg-[#FAF8F5]/40 border-beige/20' 
-                                  : isCompleted 
-                                    ? 'bg-cream/40 border-beige/45 opacity-80' 
-                                    : 'bg-white border-beige/30 hover:border-rose/30 shadow-2xs cursor-pointer'
+                                  : !isEditable
+                                    ? 'bg-[#FAF8F5]/30 border-beige/20 opacity-70 cursor-not-allowed'
+                                    : isCompleted 
+                                      ? 'bg-cream/40 border-beige/45 opacity-80 cursor-pointer' 
+                                      : 'bg-white border-beige/30 hover:border-rose/30 shadow-2xs cursor-pointer'
                               }`}
                             >
                               <div className="flex items-center gap-3">
@@ -410,10 +414,13 @@ export default function Workouts({
                     <button
                       type="button"
                       onClick={handleToggleBulkComplete}
-                      className={`w-full sm:w-auto py-3 px-6 rounded-2xl font-serif font-bold text-xs flex items-center justify-center gap-2 border shadow-xs transition-all transform hover:-translate-y-0.5 active:translate-y-0 ${
-                        activeLog.completed 
-                          ? 'bg-white hover:bg-cream text-charcoal border-beige' 
-                          : 'bg-rose hover:bg-[#E8C5C8]/90 text-charcoal border-rose/30 shadow-md'
+                      disabled={!isEditable}
+                      className={`w-full sm:w-auto py-3 px-6 rounded-2xl font-serif font-bold text-xs flex items-center justify-center gap-2 border shadow-xs transition-all ${
+                        !isEditable
+                          ? 'bg-cream text-charcoal/40 border-beige/40 cursor-not-allowed'
+                          : activeLog.completed 
+                            ? 'bg-white hover:bg-cream text-charcoal border-beige transform hover:-translate-y-0.5 active:translate-y-0' 
+                            : 'bg-rose hover:bg-[#E8C5C8]/90 text-charcoal border-rose/30 shadow-md transform hover:-translate-y-0.5 active:translate-y-0'
                       }`}
                     >
                       <Check className="w-4 h-4" />
@@ -510,8 +517,12 @@ export default function Workouts({
                     return (
                       <div
                         key={item.name}
-                        onClick={() => handlePostureToggle(item.name)}
-                        className="flex items-center justify-between p-2.5 rounded-xl bg-white/55 border border-beige/25 hover:border-rose/20 cursor-pointer text-xs"
+                        onClick={() => isEditable && handlePostureToggle(item.name)}
+                        className={`flex items-center justify-between p-2.5 rounded-xl border text-xs ${
+                          !isEditable
+                            ? 'bg-white/30 border-beige/20 text-charcoal/50 cursor-not-allowed select-none'
+                            : 'bg-white/55 border-beige/25 hover:border-rose/20 cursor-pointer'
+                        }`}
                       >
                         <div className="flex items-center gap-2 font-medium">
                           <span className={`${isChecked ? 'line-through text-charcoal/50' : 'text-charcoal'}`}>

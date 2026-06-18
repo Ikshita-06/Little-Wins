@@ -3,12 +3,12 @@ import { Sparkles, Flame, Droplet, Dumbbell, Calendar, Heart, Award, ArrowRight 
 import { getRandomQuote } from '../data/quotes';
 
 const COZY_STICKY_NOTES = [
-  "You are doing so well, lovely! Remember to take a deep breath and sip some water. You've got this! 🌸✨",
-  "Small steps still take you forward. Be proud of yourself for showing up today. You are worthy of love and rest! 🧸🤍",
-  "A little progress is still progress! Be gentle with your heart today, you're doing the best you can. ☁️🌷",
-  "Don't forget to stretch your arms, look out the window, and smile! You are an absolute star! 🌟🧸",
-  "You deserve a cozy break today. Snuggle up, drink some warm tea, and celebrate your little wins! 🍵🌸",
-  "Remember to be kind to your mind today. You don't have to be perfect to be amazing. 🫧🤍"
+  "You are doing so well, lovely! Remember to take a deep breath and sip some water. You've got this! ✨",
+  "Small steps still take you forward. Be proud of yourself for showing up today. You are worthy of love and rest! 🤍",
+  "A little progress is still progress! Be gentle with your heart today, you're doing the best you can. 🌷",
+  "Don't forget to stretch your arms, look out the window, and smile! You are an absolute star! 🧸",
+  "You deserve a cozy break today. Snuggle up, drink some warm tea, and celebrate your little wins! 🌸",
+  "Remember to be kind to your mind today. You don't have to be perfect to be amazing. 🫧"
 ];
 
 const getStickyNoteForDate = (dateStr) => {
@@ -51,7 +51,7 @@ export default function Dashboard({
 
   // Mock list of today's quick goals
   const todayTasks = [
-    { id: 'water', label: 'Stay hydrated (6 drops/3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
+    { id: 'water', label: 'Stay hydrated (3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
     { id: 'workout', label: `Workout: ${currentDayName} Routine`, completed: todayWorkout.completed, icon: Dumbbell, color: 'text-sage bg-sage/10' },
     { id: 'checkin', label: 'Daily mood & energy check-in', completed: !!todayCheckIn, icon: Heart, color: 'text-rose bg-rose/10' },
     { id: 'meals', label: 'Log three major meals', completed: todayNutrition.breakfast && todayNutrition.lunch && todayNutrition.dinner, icon: Sparkles, color: 'text-honey bg-honey/10' },
@@ -157,7 +157,7 @@ export default function Dashboard({
             </div>
           </div>
           <span className="text-[10px] text-rose font-medium italic">
-            🔥 Keep it glowing, one percent more!
+            Keep it glowing, one percent better!
           </span>
         </div>
 
