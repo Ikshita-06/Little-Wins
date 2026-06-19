@@ -6,6 +6,9 @@ import Nutrition from './components/Nutrition';
 import ProgressTracker from './components/ProgressTracker';
 import DailyCheckIn from './components/DailyCheckIn';
 import Badges from './components/Badges';
+import { badgesData } from './data/badges';
+import { getNewlyUnlockedBadges } from './utils/badgeChecker';
+import { Trophy } from 'lucide-react';
 
 const getTodayStr = (date = new Date()) => {
   const year = date.getFullYear();
@@ -49,17 +52,22 @@ export default function App() {
   // --- LOCALSTORAGE SYNCED STATES ---
   const [profile, setProfile] = useState(() => {
     const saved = localStorage.getItem('lw_profile');
-    return saved ? JSON.parse(saved) : {
+    const initial = saved ? JSON.parse(saved) : {
       age: 20,
       height: "5'0\"",
       startingWeight: 40,
       weight: 40,
       goalWeight: 45,
       phase: 1,
+      maxUnlockedPhase: 1,
       workoutStreak: 0,
       lastActiveDate: null,
       consistency: 85,
     };
+    if (initial && initial.maxUnlockedPhase === undefined) {
+      initial.maxUnlockedPhase = initial.phase || 1;
+    }
+    return initial;
   });
 
   const [periods, setPeriods] = useState(() => {
@@ -94,10 +102,27 @@ export default function App() {
     return saved ? JSON.parse(saved) : {};
   });
 
+  const [sundayReviews, setSundayReviews] = useState(() => {
+    const saved = localStorage.getItem('lw_sunday_reviews');
+    return saved ? JSON.parse(saved) : {};
+  });
+
   const [unlockedBadges, setUnlockedBadges] = useState(() => {
     const saved = localStorage.getItem('lw_badges');
-    return saved ? JSON.parse(saved) : ['first_week']; // start with 'small wins count'
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.map(id => id === 'first_week' ? 'small_wins_count' : id);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return ['small_wins_count']; // start with 'Small Wins Count'
   });
+
+  const [activeBadgeToast, setActiveBadgeToast] = useState(null);
 
   // --- SYNC TO LOCAL STORAGE ---
   useEffect(() => {
@@ -129,8 +154,46 @@ export default function App() {
   }, [dailyCheckIns]);
 
   useEffect(() => {
+    localStorage.setItem('lw_sunday_reviews', JSON.stringify(sundayReviews));
+  }, [sundayReviews]);
+
+  useEffect(() => {
     localStorage.setItem('lw_badges', JSON.stringify(unlockedBadges));
   }, [unlockedBadges]);
+
+  // Dynamic Badge Unlocking Engine
+  useEffect(() => {
+    const newlyUnlocked = getNewlyUnlockedBadges(
+      unlockedBadges,
+      dailyCheckIns,
+      waterLog,
+      workoutLog,
+      nutritionLog,
+      measurementsLog,
+      profile
+    );
+
+    if (newlyUnlocked.length > 0) {
+      const nextUnlocked = [...unlockedBadges, ...newlyUnlocked];
+      setUnlockedBadges(nextUnlocked);
+      
+      // Select the first newly unlocked badge to display in the toast alert
+      const firstBadge = badgesData.find(b => b.id === newlyUnlocked[0]);
+      if (firstBadge) {
+        setActiveBadgeToast(firstBadge);
+      }
+    }
+  }, [dailyCheckIns, waterLog, workoutLog, nutritionLog, measurementsLog, profile, unlockedBadges]);
+
+  // Auto-dismiss unlocked badge toast alert
+  useEffect(() => {
+    if (activeBadgeToast) {
+      const timer = setTimeout(() => {
+        setActiveBadgeToast(null);
+      }, 4500);
+      return () => clearTimeout(timer);
+    }
+  }, [activeBadgeToast]);
 
   // Determine current day of week based on simulated date
   const getDayOfWeek = () => {
@@ -233,6 +296,9 @@ export default function App() {
                 nutritionLog={nutritionLog}
                 workoutLog={workoutLog}
                 dailyCheckIns={dailyCheckIns}
+                measurementsLog={measurementsLog}
+                sundayReviews={sundayReviews}
+                setSundayReviews={setSundayReviews}
                 setCurrentTab={setCurrentTab}
               />
             )}
@@ -271,6 +337,8 @@ export default function App() {
                 measurementsLog={measurementsLog}
                 setMeasurementsLog={setMeasurementsLog}
                 simulatedDate={simulatedDate}
+                waterLog={waterLog}
+                workoutLog={workoutLog}
               />
             )}
 
@@ -302,6 +370,38 @@ export default function App() {
           </main>
         </div>
       </div>
+      
+      {/* Dynamic Badge Unlock Toast Notification */}
+      {activeBadgeToast && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm bg-white border-2 border-amber-300 rounded-3xl p-5 shadow-2xl flex items-start gap-3.5 animate-bounce-soft relative select-none">
+          {/* Scrapbook washi tape */}
+          <div className="washi-tape absolute -top-2.5 left-1/3 w-20 h-4 bg-amber-250/80 rotate-[-1.5deg] opacity-90"></div>
+          
+          <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center flex-shrink-0 text-amber-600 mt-1">
+            <Trophy className="w-5.5 h-5.5 fill-amber-100" />
+          </div>
+
+          <div className="flex-1 space-y-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] uppercase tracking-wider font-extrabold text-amber-500 font-sans">Badge Unlocked! 🌸</span>
+              <span className="text-[9px] bg-rose/15 text-charcoal px-2 py-0.5 rounded-full font-bold uppercase scale-90">{activeBadgeToast.rarity}</span>
+            </div>
+            <h4 className="text-sm font-bold font-serif text-charcoal leading-tight">
+              {activeBadgeToast.title}
+            </h4>
+            <p className="text-[10px] text-charcoal/65 leading-normal font-sans">
+              {activeBadgeToast.description}
+            </p>
+          </div>
+
+          <button 
+            onClick={() => setActiveBadgeToast(null)} 
+            className="text-charcoal/35 hover:text-charcoal cursor-pointer text-sm font-bold pl-1"
+          >
+            ×
+          </button>
+        </div>
+      )}
     </div>
   );
 }

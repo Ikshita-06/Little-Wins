@@ -13,12 +13,12 @@ import {
 
 export default function Sidebar({ currentTab, setCurrentTab, profile }) {
   const menuItems = [
-    { id: 'dashboard', name: 'Dashboard', icon: Home, emoji: '🏠' },
-    { id: 'workouts', name: 'Workouts', icon: Dumbbell, emoji: '🏋️‍♀️' },
-    { id: 'nutrition', name: 'Nutrition', icon: ChefHat, emoji: '🍽️' },
-    { id: 'progress', name: 'Progress', icon: LineChart, emoji: '📈' },
-    { id: 'checkin', name: 'Check-In', icon: CalendarCheck, emoji: '🫶' },
-    { id: 'badges', name: 'Badges', icon: Award, emoji: '🏆' },
+    { id: 'dashboard', name: 'Dashboard', icon: Home},
+    { id: 'workouts', name: 'Workouts', icon: Dumbbell},
+    { id: 'nutrition', name: 'Nutrition', icon: ChefHat},
+    { id: 'progress', name: 'Progress', icon: LineChart},
+    { id: 'checkin', name: 'Check-In', icon: CalendarCheck},
+    { id: 'badges', name: 'Badges', icon: Award },
   ];
 
   return (

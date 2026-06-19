@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Sparkles, Flame, Droplet, Dumbbell, Calendar, Heart, Award, ArrowRight } from 'lucide-react';
 import { getRandomQuote } from '../data/quotes';
+import SundayReview from './SundayReview';
 
 const COZY_STICKY_NOTES = [
-  "You are doing so well, lovely! Remember to take a deep breath and sip some water. You've got this! ✨",
-  "Small steps still take you forward. Be proud of yourself for showing up today. You are worthy of love and rest! 🤍",
-  "A little progress is still progress! Be gentle with your heart today, you're doing the best you can. 🌷",
-  "Don't forget to stretch your arms, look out the window, and smile! You are an absolute star! 🧸",
-  "You deserve a cozy break today. Snuggle up, drink some warm tea, and celebrate your little wins! 🌸",
-  "Remember to be kind to your mind today. You don't have to be perfect to be amazing. 🫧"
+  "You are doing so well, lovely! Remember to take a deep breath and sip some water. You've got this! 🌸✨",
+  "Small steps still take you forward. Be proud of yourself for showing up today. You are worthy of love and rest! 🧸🤍",
+  "A little progress is still progress! Be gentle with your heart today, you're doing the best you can. ☁️🌷",
+  "Don't forget to stretch your arms, look out the window, and smile! You are an absolute star! 🌟🧸",
+  "You deserve a cozy break today. Snuggle up, drink some warm tea, and celebrate your little wins! 🍵🌸",
+  "Remember to be kind to your mind today. You don't have to be perfect to be amazing. 🫧🤍"
 ];
 
 const getStickyNoteForDate = (dateStr) => {
@@ -31,9 +32,13 @@ export default function Dashboard({
   nutritionLog,
   workoutLog,
   dailyCheckIns,
+  measurementsLog,
+  sundayReviews,
+  setSundayReviews,
   setCurrentTab
 }) {
   const [quote] = useState(getRandomQuote());
+  const [showSundayReview, setShowSundayReview] = useState(false);
   const stickyNote = getStickyNoteForDate(simulatedDate);
 
   // Get data for today
@@ -51,7 +56,7 @@ export default function Dashboard({
 
   // Mock list of today's quick goals
   const todayTasks = [
-    { id: 'water', label: 'Stay hydrated (3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
+    { id: 'water', label: 'Stay hydrated (6 drops/3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
     { id: 'workout', label: `Workout: ${currentDayName} Routine`, completed: todayWorkout.completed, icon: Dumbbell, color: 'text-sage bg-sage/10' },
     { id: 'checkin', label: 'Daily mood & energy check-in', completed: !!todayCheckIn, icon: Heart, color: 'text-rose bg-rose/10' },
     { id: 'meals', label: 'Log three major meals', completed: todayNutrition.breakfast && todayNutrition.lunch && todayNutrition.dinner, icon: Sparkles, color: 'text-honey bg-honey/10' },
@@ -92,6 +97,41 @@ export default function Dashboard({
           <div className="absolute inset-0 bg-gradient-to-t from-white/30 to-transparent pointer-events-none"></div>
         </div>
       </div>
+
+      {/* Sunday Weekly Review Prompt Banner */}
+      {currentDayName === 'Sunday' && (
+        <div className="relative rounded-3xl bg-gradient-to-r from-rose/10 via-[#FFFDFB] to-sage/10 border-2 border-dashed border-rose/30 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm select-none">
+          {/* Washi Tapes decoration */}
+          <div className="washi-tape absolute -top-2 left-10 w-20 h-4 bg-rose/65 rotate-[-2deg] opacity-90"></div>
+          
+          <div className="flex items-center gap-3.5 text-center sm:text-left">
+            <div className="w-11 h-11 rounded-2xl bg-rose/15 border border-rose/25 flex items-center justify-center flex-shrink-0 text-rose font-bold text-xl">
+              📖
+            </div>
+            <div className="space-y-0.5">
+              <h4 className="text-md font-bold font-serif text-charcoal flex items-center gap-1.5 justify-center sm:justify-start">
+                <span>Weekly Sunday Review is Ready!</span>
+                {sundayReviews && !!sundayReviews[simulatedDate] && (
+                  <span className="text-[9px] bg-sage text-charcoal px-2 py-0.5 rounded-full font-bold uppercase tracking-wider font-sans">Completed</span>
+                )}
+              </h4>
+              <p className="text-xs text-charcoal/65 font-sans">
+                {sundayReviews && !!sundayReviews[simulatedDate]
+                  ? "Your weekly Sunday journal entries are completed and stamped. View your reflections and stats!" 
+                  : "Celebrate your weekly wins, check your consistency metrics, write reflections, and unlock your next training phase! 🤍"}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setShowSundayReview(true)}
+            className="flex-shrink-0 bg-white border border-rose/30 hover:border-rose text-rose font-bold py-2 px-4 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-98 transition-all hover:bg-rose/5"
+          >
+            <span>{sundayReviews && !!sundayReviews[simulatedDate] ? "View Reflections 📖" : "Open Weekly Journal 🌸"}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Grid of Main Dashboard Status Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -157,7 +197,7 @@ export default function Dashboard({
             </div>
           </div>
           <span className="text-[10px] text-rose font-medium italic">
-            Keep it glowing, one percent better!
+            🔥 Keep it glowing, one percent more!
           </span>
         </div>
 
@@ -330,6 +370,23 @@ export default function Dashboard({
         </div>
 
       </div>
+
+      {/* Sunday Review modal overlay */}
+      {showSundayReview && (
+        <SundayReview
+          sundayDateStr={simulatedDate}
+          workoutLog={workoutLog}
+          waterLog={waterLog}
+          nutritionLog={nutritionLog}
+          dailyCheckIns={dailyCheckIns}
+          measurementsLog={measurementsLog}
+          profile={profile}
+          setProfile={setProfile}
+          sundayReviews={sundayReviews}
+          setSundayReviews={setSundayReviews}
+          onClose={() => setShowSundayReview(false)}
+        />
+      )}
 
     </div>
   );

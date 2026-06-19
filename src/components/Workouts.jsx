@@ -9,7 +9,8 @@ import {
   Heart, 
   Zap, 
   Activity,
-  Maximize2
+  Maximize2,
+  Lock
 } from 'lucide-react';
 import { baseWorkouts, postureRoutine, getScaledWorkout, getScaledExercise } from '../data/workoutData';
 
@@ -458,27 +459,37 @@ export default function Workouts({
                 { phase: 3, title: "Phase 3: Growing", desc: "Weeks 5–8 • 3 Sets • 12–15 Reps • 45s Holds", emoji: "💪" }
               ].map((item) => {
                 const isCurrent = profile.phase === item.phase;
+                const isUnlocked = item.phase <= (profile.maxUnlockedPhase || 1);
                 return (
                   <button
                     key={item.phase}
                     type="button"
-                    onClick={() => handlePhaseChange(item.phase)}
+                    disabled={!isUnlocked}
+                    onClick={() => isUnlocked && handlePhaseChange(item.phase)}
                     className={`w-full text-left p-3.5 rounded-xl border flex flex-col transition-all ${
                       isCurrent 
                         ? 'bg-sage/20 border-sage text-charcoal shadow-2xs font-semibold' 
-                        : 'bg-white border-beige/35 text-charcoal/70 hover:border-sage/30'
+                        : isUnlocked
+                          ? 'bg-white border-beige/35 text-charcoal/70 hover:border-sage/30 cursor-pointer'
+                          : 'bg-cream/40 border-dashed border-beige/30 text-charcoal/40 cursor-not-allowed opacity-75'
                     }`}
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 w-full">
                       <span className="text-sm">{item.emoji}</span>
                       <span className="text-xs font-bold">{item.title}</span>
-                      {isCurrent && (
+                      {isCurrent ? (
                         <span className="text-[9px] bg-sage text-charcoal font-bold px-1.5 py-0.2 rounded-full uppercase ml-auto">
                           Active
                         </span>
-                      )}
+                      ) : !isUnlocked ? (
+                        <span className="text-[9px] text-charcoal/45 font-bold uppercase ml-auto flex items-center gap-1">
+                          <Lock className="w-2.5 h-2.5" /> Locked
+                        </span>
+                      ) : null}
                     </div>
-                    <span className="text-[9px] text-charcoal/50 leading-tight mt-1">{item.desc}</span>
+                    <span className="text-[9px] text-charcoal/50 leading-tight mt-1">
+                      {isUnlocked ? item.desc : "🔒 Complete a Sunday Review with 80%+ workout consistency to unlock."}
+                    </span>
                   </button>
                 );
               })}
