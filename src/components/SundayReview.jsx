@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  Check, 
-  BookOpen, 
-  Sparkles, 
-  Droplet, 
-  Heart, 
-  Activity, 
+import {
+  Check,
+  BookOpen,
+  Sparkles,
+  Droplet,
+  Heart,
+  Activity,
   Award,
   ArrowRight,
   ChevronDown,
@@ -88,13 +88,12 @@ export default function SundayReview({
         {[...Array(6)].map((_, i) => {
           const isDone = i < completedCount;
           return (
-            <div 
-              key={i} 
-              className={`w-7 h-7 rounded-md border flex items-center justify-center font-sans text-[10px] font-bold ${
-                isDone 
-                  ? 'bg-sage border-sage/40 text-charcoal' 
-                  : 'bg-[#FAF8F5] border-dashed border-beige/40 text-charcoal/30'
-              }`}
+            <div
+              key={i}
+              className={`w-7 h-7 rounded-md border flex items-center justify-center font-sans text-[10px] font-bold ${isDone
+                  ? 'bg-sage border-sage/40 text-charcoal'
+                  : 'bg-cream border-dashed border-beige/40 text-charcoal/30'
+                }`}
             >
               {isDone ? '✓' : ''}
             </div>
@@ -110,7 +109,7 @@ export default function SundayReview({
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-charcoal/20 backdrop-blur-xs select-none overflow-y-auto">
       {/* Main Journal Container */}
       <div className="bg-white border border-beige/60 shadow-2xl rounded-3xl w-full max-w-lg p-6 md:p-8 relative max-h-[90vh] overflow-y-auto journal-bg">
-        
+
         {/* Binder Loops Graphic */}
         <div className="absolute top-6 bottom-6 left-2 w-4 flex flex-col justify-around pointer-events-none z-10">
           {[...Array(6)].map((_, i) => (
@@ -139,7 +138,7 @@ export default function SundayReview({
         {/* Main Content */}
         {!isSubmitted && !isAlreadyReviewed ? (
           <div className="pl-6 space-y-6">
-            
+
             {/* Section 1: Workout Consistency */}
             <div className="bg-cream/45 border border-beige/40 p-4 rounded-2xl text-center shadow-2xs">
               <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-charcoal/50">Workout Consistency</span>
@@ -173,7 +172,7 @@ export default function SundayReview({
             </div>
 
             {/* Section 3: Growth Metrics */}
-            <div className="bg-[#FAF8F5] border border-beige/40 p-4 rounded-xl flex items-center justify-between text-xs shadow-2xs">
+            <div className="bg-cream border border-beige/40 p-4 rounded-xl flex items-center justify-between text-xs shadow-2xs">
               <div>
                 <span className="text-charcoal/50 uppercase tracking-wider text-[8px] font-bold block font-sans">Weekly Weight Change</span>
                 <span className="font-serif font-bold text-charcoal text-sm mt-0.5 block">{metrics.weightChangeStr}</span>
@@ -193,7 +192,7 @@ export default function SundayReview({
                 onChange={(e) => setReflection(e.target.value)}
                 placeholder="How did you feel about your routines, strengths, and goals this week?"
                 rows={3}
-                className="w-full text-xs font-serif italic bg-[#FAF8F5] border border-beige/50 rounded-xl p-3 outline-none focus:border-sage focus:bg-white resize-none text-charcoal leading-relaxed shadow-inner"
+                className="w-full text-xs font-serif italic bg-cream border border-beige/50 rounded-xl p-3 outline-none focus:border-sage focus:bg-white resize-none text-charcoal leading-relaxed shadow-inner placeholder-charcoal/50"
               />
             </div>
 
@@ -259,7 +258,7 @@ export default function SundayReview({
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleSubmitReview(false)}
-                      className="flex-1 bg-[#FAF8F5] border border-beige/40 text-charcoal font-bold py-2.5 rounded-xl text-xs cursor-pointer hover:bg-cream active:scale-98 transition-all"
+                      className="flex-1 bg-cream border border-beige/40 text-charcoal font-bold py-2.5 rounded-xl text-xs cursor-pointer hover:bg-cream active:scale-98 transition-all"
                     >
                       Try Again Next Week
                     </button>
@@ -279,7 +278,7 @@ export default function SundayReview({
         ) : (
           // Submission Celebration State / Already Reviewed View
           <div className="pl-6 space-y-6 text-center">
-            
+
             <div className="py-8 space-y-3">
               <div className="w-16 h-16 rounded-full bg-sage/20 border-2 border-sage flex items-center justify-center mx-auto text-sage text-2xl font-bold">
                 🌸
@@ -293,7 +292,7 @@ export default function SundayReview({
             </div>
 
             {/* Summary details card */}
-            <div className="bg-[#FAF8F5] border border-beige/45 rounded-2xl p-4.5 text-left space-y-3.5 shadow-2xs">
+            <div className="bg-cream border border-beige/45 rounded-2xl p-4.5 text-left space-y-3.5 shadow-2xs">
               <div className="flex justify-between items-center text-xs">
                 <span className="text-charcoal/50 font-bold font-sans uppercase text-[9px]">Weekly Title:</span>
                 <span className="font-serif font-bold text-rose text-sm">
@@ -331,7 +330,7 @@ export default function SundayReview({
 
         {/* Historical entries timeline */}
         <div className="mt-8 border-t border-beige/25 pt-4 pl-6 select-none">
-          <button 
+          <button
             onClick={() => setShowHistory(!showHistory)}
             className="flex items-center gap-1 text-[10px] font-bold text-charcoal/60 uppercase tracking-widest cursor-pointer mx-auto"
           >

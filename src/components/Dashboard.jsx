@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, Flame, Droplet, Dumbbell, Calendar, Heart, Award, ArrowRight } from 'lucide-react';
 import { getRandomQuote } from '../data/quotes';
 import SundayReview from './SundayReview';
 
 const COZY_STICKY_NOTES = [
-  "You are doing so well, lovely! Remember to take a deep breath and sip some water. You've got this! 🌸✨",
-  "Small steps still take you forward. Be proud of yourself for showing up today. You are worthy of love and rest! 🧸🤍",
-  "A little progress is still progress! Be gentle with your heart today, you're doing the best you can. ☁️🌷",
-  "Don't forget to stretch your arms, look out the window, and smile! You are an absolute star! 🌟🧸",
-  "You deserve a cozy break today. Snuggle up, drink some warm tea, and celebrate your little wins! 🍵🌸",
-  "Remember to be kind to your mind today. You don't have to be perfect to be amazing. 🫧🤍"
+  "You are doing so well, lovely! Remember to take a deep breath and sip some water. You've got this! ✨",
+  "Small steps still take you forward. Be proud of yourself for showing up today. You are worthy of love and rest! 🧿",
+  "A little progress is still progress! Be gentle with your heart today, you're doing the best you can. 🌷",
+  "Don't forget to stretch your arms, look out the window, and smile! You are an absolute star! 🧸",
+  "You deserve a cozy break today. Snuggle up, drink some warm tea, and celebrate your little wins! 🌸",
+  "Remember to be kind to your mind today. You don't have to be perfect to be amazing. 🤍"
 ];
 
 const getStickyNoteForDate = (dateStr) => {
@@ -35,11 +35,60 @@ export default function Dashboard({
   measurementsLog,
   sundayReviews,
   setSundayReviews,
-  setCurrentTab
+  setCurrentTab,
+  darkMode
 }) {
-  const [quote] = useState(getRandomQuote());
+  const [quote, setQuote] = useState(() => getRandomQuote(darkMode));
   const [showSundayReview, setShowSundayReview] = useState(false);
   const stickyNote = getStickyNoteForDate(simulatedDate);
+
+  useEffect(() => {
+    setQuote(getRandomQuote(darkMode));
+  }, [darkMode]);
+
+  const [isInstallable, setIsInstallable] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showIOSPrompt, setShowIOSPrompt] = useState(false);
+
+  useEffect(() => {
+    const isDismissed = localStorage.getItem('lw_pwa_dismissed') === 'true';
+    if (isDismissed) return;
+
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isStandalone) return;
+
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // iOS detection
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      setShowIOSPrompt(true);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    setDeferredPrompt(null);
+    setIsInstallable(false);
+  };
+
+  const handleDismiss = () => {
+    localStorage.setItem('lw_pwa_dismissed', 'true');
+    setIsInstallable(false);
+    setShowIOSPrompt(false);
+  };
 
   // Get data for today
   const todayWater = waterLog[simulatedDate] || 0;
@@ -56,7 +105,7 @@ export default function Dashboard({
 
   // Mock list of today's quick goals
   const todayTasks = [
-    { id: 'water', label: 'Stay hydrated (6 drops/3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
+    { id: 'water', label: 'Stay hydrated (3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
     { id: 'workout', label: `Workout: ${currentDayName} Routine`, completed: todayWorkout.completed, icon: Dumbbell, color: 'text-sage bg-sage/10' },
     { id: 'checkin', label: 'Daily mood & energy check-in', completed: !!todayCheckIn, icon: Heart, color: 'text-rose bg-rose/10' },
     { id: 'meals', label: 'Log three major meals', completed: todayNutrition.breakfast && todayNutrition.lunch && todayNutrition.dinner, icon: Sparkles, color: 'text-honey bg-honey/10' },
@@ -77,13 +126,13 @@ export default function Dashboard({
             <span>Cozy space for self-love 🤍</span>
           </div>
           <h2 className="text-3.5xl md:text-4.5xl font-serif text-charcoal leading-tight">
-            Hello, <span className="italic">Lovely</span> 🧸
+            Hello, <span className="italic">{profile.name || "Lovely"}</span> 🧸
           </h2>
           <p className="text-sm md:text-base text-charcoal/70 font-sans max-w-md">
             {quote}
           </p>
           <div className="font-cursive text-2xl text-rose/85 pt-1">
-            ~ you're doing so wonderful today! 🫧
+            ~ you're doing so wonderful today! 🌸
           </div>
         </div>
 
@@ -98,12 +147,81 @@ export default function Dashboard({
         </div>
       </div>
 
+      {/* PWA Install Promo Banner */}
+      {isInstallable && (
+        <div className="relative rounded-3xl bg-gradient-to-r from-buttercream/35 via-white to-rose/10 border-2 border-dashed border-beige/80 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs select-none">
+          {/* Washi Tape decoration */}
+          <div className="washi-tape absolute -top-2 right-10 w-24 h-4 bg-honey/40 rotate-[1.5deg] opacity-90"></div>
+
+          <div className="flex items-center gap-3.5 text-center sm:text-left">
+            <div className="w-11 h-11 rounded-2xl bg-buttercream/45 border border-honey/30 flex items-center justify-center flex-shrink-0 text-2xl">
+              🧸
+            </div>
+            <div className="space-y-0.5">
+              <h4 className="text-md font-bold font-serif text-charcoal">
+                Add Little Wins to your home screen!
+              </h4>
+              <p className="text-xs text-charcoal/65 font-sans">
+                Install the app on your phone for quick, cozy, and offline tracking.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={handleDismiss}
+              className="text-xs text-charcoal/50 hover:text-charcoal px-3 py-2 rounded-xl transition-all cursor-pointer font-medium"
+            >
+              Maybe later
+            </button>
+            <button
+              onClick={handleInstallClick}
+              className="bg-honey hover:bg-honey/85 text-[#423E3A] font-bold py-2 px-4 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-98 transition-all"
+            >
+              <span>Install App 👑</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* PWA iOS Manual Share Sheet Banner */}
+      {showIOSPrompt && (
+        <div className="relative rounded-3xl bg-gradient-to-r from-buttercream/35 via-white to-rose/10 border-2 border-dashed border-beige/80 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs select-none">
+          {/* Washi Tape decoration */}
+          <div className="washi-tape absolute -top-2 right-10 w-24 h-4 bg-rose/45 rotate-[1.5deg] opacity-90"></div>
+
+          <div className="flex items-center gap-3.5 text-center sm:text-left">
+            <div className="w-11 h-11 rounded-2xl bg-rose/15 border border-rose/20 flex items-center justify-center flex-shrink-0 text-2xl">
+              📲
+            </div>
+            <div className="space-y-0.5">
+              <h4 className="text-md font-bold font-serif text-charcoal">
+                Install Little Wins on iOS
+              </h4>
+              <p className="text-xs text-charcoal/65 font-sans">
+                Tap the share button <span className="font-semibold">📤</span> in Safari, then choose <span className="font-semibold">"Add to Home Screen"</span> to install!
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={handleDismiss}
+              className="text-xs text-charcoal/50 hover:text-charcoal px-3 py-2 rounded-xl transition-all cursor-pointer font-medium"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Sunday Weekly Review Prompt Banner */}
       {currentDayName === 'Sunday' && (
-        <div className="relative rounded-3xl bg-gradient-to-r from-rose/10 via-[#FFFDFB] to-sage/10 border-2 border-dashed border-rose/30 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm select-none">
+        <div className="relative rounded-3xl bg-gradient-to-r from-rose/10 via-white to-sage/10 border-2 border-dashed border-rose/30 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm select-none">
           {/* Washi Tapes decoration */}
           <div className="washi-tape absolute -top-2 left-10 w-20 h-4 bg-rose/65 rotate-[-2deg] opacity-90"></div>
-          
+
           <div className="flex items-center gap-3.5 text-center sm:text-left">
             <div className="w-11 h-11 rounded-2xl bg-rose/15 border border-rose/25 flex items-center justify-center flex-shrink-0 text-rose font-bold text-xl">
               📖
@@ -117,7 +235,7 @@ export default function Dashboard({
               </h4>
               <p className="text-xs text-charcoal/65 font-sans">
                 {sundayReviews && !!sundayReviews[simulatedDate]
-                  ? "Your weekly Sunday journal entries are completed and stamped. View your reflections and stats!" 
+                  ? "Your weekly Sunday journal entries are completed and stamped. View your reflections and stats!"
                   : "Celebrate your weekly wins, check your consistency metrics, write reflections, and unlock your next training phase! 🤍"}
               </p>
             </div>
@@ -165,7 +283,7 @@ export default function Dashboard({
             ) : (
               <div className="select-none">
                 <div className="text-lg font-serif text-charcoal leading-snug group-hover:text-rose font-bold">
-                  Log mood & vibe 🫶
+                  Log mood & vibe 🤍
                 </div>
                 <div className="text-[10px] text-charcoal/50 mt-0.5">
                   Tap to check-in for today
@@ -221,7 +339,7 @@ export default function Dashboard({
           <div className="w-full bg-cream rounded-full h-1.5 overflow-hidden">
             <div
               className="bg-rose h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(100, Math.max(0, ((profile.weight - (profile.startingWeight || 40)) / (profile.goalWeight - (profile.startingWeight || 40))) * 100))}%` }}
+              style={{ width: `${Math.min(100, Math.max(0, ((profile.weight - (profile.startingWeight || 39)) / (profile.goalWeight - (profile.startingWeight || 39))) * 100))}%` }}
             ></div>
           </div>
         </div>

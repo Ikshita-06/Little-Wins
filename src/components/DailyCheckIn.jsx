@@ -262,7 +262,7 @@ export default function DailyCheckIn({
             <div className="washi-tape absolute top-[-6px] left-8 w-16 h-4 rotate-[1deg] opacity-60"></div>
             <h3 className="text-lg font-serif mb-4 flex items-center gap-2">
               <span>How is your mood today?</span>
-              <span className="text-sm">🤍</span>
+              <span className="text-sm">🧸</span>
             </h3>
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
@@ -273,12 +273,11 @@ export default function DailyCheckIn({
                     key={opt.label}
                     type="button"
                     onClick={() => isEditable && setSelectedMood(opt.emoji)}
-                    className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border text-center transition-all ${
-                      !isEditable
-                        ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed select-none'
-                        : isActive
-                          ? `${opt.activeColor} text-charcoal scale-102 ring-2 font-bold shadow-xs`
-                          : 'bg-[#FAF8F5]/60 hover:bg-[#F5EBD0]/30 border-beige/40 text-charcoal/80'
+                    className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border text-center transition-all ${!isEditable
+                      ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed select-none'
+                      : isActive
+                        ? `${opt.activeColor} text-charcoal scale-102 ring-2 font-bold shadow-xs`
+                        : 'bg-cream/60 hover:bg-[#F5EBD0]/30 border-beige/40 text-charcoal/80'
                       }`}
                   >
                     <span className="text-3.5xl mb-1.5 filter drop-shadow-xs transition-transform hover:scale-115 duration-300">
@@ -364,12 +363,11 @@ export default function DailyCheckIn({
               <button
                 type="button"
                 onClick={() => isEditable && setIsOnPeriod(!isOnPeriod)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-all ${
-                  !isEditable
-                    ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed'
-                    : isOnPeriod
-                      ? 'bg-rose/20 border-rose text-charcoal shadow-2xs font-bold'
-                      : 'bg-white border-beige/40 text-charcoal/60 hover:border-rose/30'
+                className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-all ${!isEditable
+                  ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed'
+                  : isOnPeriod
+                    ? 'bg-rose/20 border-rose text-charcoal shadow-2xs font-bold'
+                    : 'bg-white border-beige/40 text-charcoal/60 hover:border-rose/30'
                   }`}
               >
                 <span>{isOnPeriod ? 'On Period 🧸' : 'Off Period ☁️'}</span>
@@ -387,9 +385,8 @@ export default function DailyCheckIn({
                 disabled={!isEditable}
                 placeholder={isEditable ? "Write down a happy moment, physical symptoms, gratitude, or a letter to yourself..." : "No daily reflections were recorded."}
                 rows="4"
-                className={`w-full bg-cream/30 border border-beige/40 rounded-2xl p-4 text-sm outline-hidden focus:ring-1 focus:ring-sage/20 placeholder-charcoal/30 font-cursive text-lg leading-relaxed ${
-                  !isEditable ? 'cursor-not-allowed text-charcoal/60' : 'focus:border-sage'
-                }`}
+                className={`w-full bg-cream/30 border border-beige/40 rounded-2xl p-4 text-sm outline-hidden focus:ring-1 focus:ring-sage/20 placeholder-charcoal/30 font-cursive text-lg leading-relaxed ${!isEditable ? 'cursor-not-allowed text-charcoal/60' : 'focus:border-sage'
+                  }`}
               />
             </div>
           </div>
@@ -421,9 +418,8 @@ export default function DailyCheckIn({
                     key={i}
                     type="button"
                     onClick={() => isEditable && handleWaterBubbleClick(i)}
-                    className={`text-3xl select-none focus:outline-hidden ${
-                      isEditable ? 'hover:scale-120 active:scale-95 transition-transform cursor-pointer' : 'cursor-not-allowed opacity-60'
-                    }`}
+                    className={`text-4xl select-none focus:outline-hidden ${isEditable ? 'hover:scale-120 active:scale-95 transition-transform cursor-pointer' : 'cursor-not-allowed opacity-60'
+                      }`}
                   >
                     {filled ? '💧' : '🫧'}
                   </button>
@@ -445,12 +441,11 @@ export default function DailyCheckIn({
             <button
               type="button"
               onClick={() => isEditable && handleWorkoutToggle()}
-              className={`w-full py-4 px-5 rounded-2.5xl border transition-all text-left flex items-center justify-between ${
-                !isEditable
-                  ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed'
-                  : draftWorkout.completed
-                    ? 'bg-sage/25 border-sage text-charcoal shadow-2xs font-semibold'
-                    : 'bg-white border-beige/40 text-charcoal/60 hover:border-sage/40'
+              className={`w-full py-4 px-5 rounded-2.5xl border transition-all text-left flex items-center justify-between ${!isEditable
+                ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed'
+                : draftWorkout.completed
+                  ? 'bg-sage/25 border-sage text-charcoal shadow-2xs font-semibold'
+                  : 'bg-white border-beige/40 text-charcoal/60 hover:border-sage/40'
                 }`}
             >
               <div className="space-y-0.5">
@@ -462,8 +457,8 @@ export default function DailyCheckIn({
                 </div>
               </div>
               <div className={`w-6 h-6 rounded-full flex items-center justify-center border transition-all ${draftWorkout.completed
-                  ? 'bg-sage border-sage text-white'
-                  : 'border-beige hover:border-sage bg-white'
+                ? 'bg-sage border-sage text-white'
+                : 'border-beige hover:border-sage bg-white'
                 }`}>
                 {draftWorkout.completed && <Check className="w-3.5 h-3.5" />}
               </div>
@@ -491,18 +486,17 @@ export default function DailyCheckIn({
                     key={meal.key}
                     type="button"
                     onClick={() => isEditable && handleMealToggle(meal.key)}
-                    className={`w-full p-3.5 rounded-xl border text-left flex items-center justify-between transition-all ${
-                      !isEditable
-                        ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed'
-                        : checked
-                          ? 'bg-[#E8C08A]/20 border-honey text-charcoal shadow-2xs font-medium'
-                          : 'bg-white border-beige/30 text-charcoal/60 hover:border-honey/30'
+                    className={`w-full p-3.5 rounded-xl border text-left flex items-center justify-between transition-all ${!isEditable
+                      ? 'bg-cream/40 border-beige/30 text-charcoal/40 cursor-not-allowed'
+                      : checked
+                        ? 'bg-[#E8C08A]/20 border-honey text-charcoal shadow-2xs font-medium'
+                        : 'bg-white border-beige/30 text-charcoal/60 hover:border-honey/30'
                       }`}
                   >
                     <span className="text-xs font-semibold">{meal.label}</span>
                     <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${checked
-                        ? 'bg-honey border-honey text-white'
-                        : 'border-beige hover:border-honey bg-white'
+                      ? 'bg-honey border-honey text-white'
+                      : 'border-beige hover:border-honey bg-white'
                       }`}>
                       {checked && <Check className="w-3 h-3" />}
                     </div>
@@ -518,22 +512,20 @@ export default function DailyCheckIn({
               type="button"
               onClick={handleClearCheckIn}
               disabled={!isEditable}
-              className={`flex-1 py-4 font-serif font-bold rounded-2.5xl flex items-center justify-center gap-2 border transition-all ${
-                !isEditable
-                  ? 'bg-cream text-charcoal/40 border-beige/40 cursor-not-allowed'
-                  : 'bg-white hover:bg-cream text-charcoal border-beige/60 shadow-xs hover:shadow-sm transform hover:-translate-y-0.5 active:translate-y-0'
-              }`}
+              className={`flex-1 py-4 font-serif font-bold rounded-2.5xl flex items-center justify-center gap-2 border transition-all ${!isEditable
+                ? 'bg-cream text-charcoal/40 border-beige/40 cursor-not-allowed'
+                : 'bg-white hover:bg-cream text-charcoal border-beige/60 shadow-xs hover:shadow-sm transform hover:-translate-y-0.5 active:translate-y-0'
+                }`}
             >
               <span>Clear Page ☁️</span>
             </button>
             <button
               type="submit"
               disabled={!isEditable}
-              className={`flex-[2] py-4 font-serif font-bold rounded-2.5xl flex items-center justify-center gap-2 border transition-all ${
-                !isEditable
-                  ? 'bg-cream text-charcoal/40 border-beige/40 cursor-not-allowed'
-                  : 'bg-rose hover:bg-[#E8C5C8]/90 text-charcoal border-rose/30 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0'
-              }`}
+              className={`flex-[2] py-4 font-serif font-bold rounded-2.5xl flex items-center justify-center gap-2 border transition-all ${!isEditable
+                ? 'bg-cream text-charcoal/40 border-beige/40 cursor-not-allowed'
+                : 'bg-rose hover:bg-[#E8C5C8]/90 text-charcoal border-rose/30 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0'
+                }`}
             >
               <Save className="w-5 h-5" />
               <span>Save Daily Page 🌸</span>

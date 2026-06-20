@@ -20,6 +20,25 @@ const getTodayStr = (date = new Date()) => {
 export default function App() {
   const [currentTab, setCurrentTab] = useState('dashboard');
 
+  // Cozy Night Mode synced to localStorage
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('lw_dark_mode') === 'true';
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('lw_dark_mode', 'true');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('lw_dark_mode', 'false');
+    }
+  }, [darkMode]);
+
+  const toggleDarkMode = () => {
+    setDarkMode(prev => !prev);
+  };
+
   // Date Simulator state for testing/viewing logs on different days
   const [simulatedDate, setSimulatedDate] = useState(getTodayStr());
 
@@ -30,12 +49,12 @@ export default function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       const newTodayStr = getTodayStr();
-      
+
       // If midnight has passed (the calendar date has changed)
       if (newTodayStr !== realTodayRef.current) {
         const oldTodayStr = realTodayRef.current;
         realTodayRef.current = newTodayStr;
-        
+
         setSimulatedDate(prev => {
           // Only auto-advance if the user was currently looking at the active "today" page
           if (prev === oldTodayStr) {
@@ -55,8 +74,8 @@ export default function App() {
     const initial = saved ? JSON.parse(saved) : {
       age: 20,
       height: "5'0\"",
-      startingWeight: 40,
-      weight: 40,
+      startingWeight: 39,
+      weight: 39,
       goalWeight: 45,
       phase: 1,
       maxUnlockedPhase: 1,
@@ -176,7 +195,7 @@ export default function App() {
     if (newlyUnlocked.length > 0) {
       const nextUnlocked = [...unlockedBadges, ...newlyUnlocked];
       setUnlockedBadges(nextUnlocked);
-      
+
       // Select the first newly unlocked badge to display in the toast alert
       const firstBadge = badgesData.find(b => b.id === newlyUnlocked[0]);
       if (firstBadge) {
@@ -208,11 +227,11 @@ export default function App() {
   const checkIfDateIsEditable = (dateStr) => {
     const today = new Date();
     const todayStr = getTodayStr(today);
-    
+
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = getTodayStr(yesterday);
-    
+
     return dateStr === todayStr || dateStr === yesterdayStr;
   };
 
@@ -226,6 +245,8 @@ export default function App() {
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         profile={{ ...profile, periods }}
+        darkMode={darkMode}
+        toggleDarkMode={toggleDarkMode}
       />
 
       {/* Main Layout Area */}
@@ -300,6 +321,7 @@ export default function App() {
                 sundayReviews={sundayReviews}
                 setSundayReviews={setSundayReviews}
                 setCurrentTab={setCurrentTab}
+                darkMode={darkMode}
               />
             )}
 
@@ -370,13 +392,13 @@ export default function App() {
           </main>
         </div>
       </div>
-      
+
       {/* Dynamic Badge Unlock Toast Notification */}
       {activeBadgeToast && (
         <div className="fixed bottom-6 right-6 z-50 max-w-sm bg-white border-2 border-amber-300 rounded-3xl p-5 shadow-2xl flex items-start gap-3.5 animate-bounce-soft relative select-none">
           {/* Scrapbook washi tape */}
           <div className="washi-tape absolute -top-2.5 left-1/3 w-20 h-4 bg-amber-250/80 rotate-[-1.5deg] opacity-90"></div>
-          
+
           <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center flex-shrink-0 text-amber-600 mt-1">
             <Trophy className="w-5.5 h-5.5 fill-amber-100" />
           </div>
@@ -394,8 +416,8 @@ export default function App() {
             </p>
           </div>
 
-          <button 
-            onClick={() => setActiveBadgeToast(null)} 
+          <button
+            onClick={() => setActiveBadgeToast(null)}
             className="text-charcoal/35 hover:text-charcoal cursor-pointer text-sm font-bold pl-1"
           >
             ×

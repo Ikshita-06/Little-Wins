@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Dumbbell, 
-  Check, 
-  Flame, 
-  ChevronDown, 
-  ChevronUp, 
-  Sparkles, 
-  Heart, 
-  Zap, 
+import {
+  Dumbbell,
+  Check,
+  Flame,
+  ChevronDown,
+  ChevronUp,
+  Sparkles,
+  Heart,
+  Zap,
   Activity,
   Maximize2,
   Lock
@@ -36,7 +36,7 @@ export default function Workouts({
 
   // Load scaled workout for the selected day based on user's current phase
   const scaledWorkout = getScaledWorkout(selectedDay, profile.phase);
-  
+
   // Get workout data for the actual simulated day (to handle completed states)
   const simulatedWorkout = getScaledWorkout(currentDayName, profile.phase);
   const activeLog = workoutLog[simulatedDate] || { completed: false, completedExercises: {}, completedPosture: {} };
@@ -198,7 +198,7 @@ export default function Workouts({
 
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto space-y-8 select-none">
-      
+
       {/* Top Banner and Cozy Intro */}
       <div className="relative rounded-3xl overflow-hidden glass-card p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="washi-tape absolute top-0 left-10 w-24 h-5 rotate-[-1.5deg] opacity-75"></div>
@@ -215,9 +215,9 @@ export default function Workouts({
           </p>
         </div>
         <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-beige/40 shadow-xs flex-shrink-0">
-          <img 
-            src="/workout_aesthetic.png" 
-            alt="Workout aesthetic watercolor" 
+          <img
+            src="/workout_aesthetic.png"
+            alt="Workout aesthetic watercolor"
             className="w-full h-full object-cover"
           />
         </div>
@@ -225,10 +225,10 @@ export default function Workouts({
 
       {/* Main Grid: Checklist Left, Phase & Posture Right */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        
+
         {/* Left Side (2 cols): Weekly Nav + Checklist */}
         <div className="lg:col-span-2 space-y-6">
-          
+
           {/* Weekly Navigation Tabs */}
           <div className="glass-card rounded-2xl p-4 relative">
             <div className="washi-tape absolute top-[-6px] left-12 w-16 h-4 rotate-[1deg] opacity-60"></div>
@@ -240,11 +240,10 @@ export default function Workouts({
                   <button
                     key={day}
                     onClick={() => setSelectedDay(day)}
-                    className={`flex-1 min-w-[70px] py-2.5 px-1 rounded-xl text-center flex flex-col items-center justify-center border transition-all ${
-                      isSelected 
-                        ? 'bg-rose/25 border-rose text-charcoal font-bold scale-102' 
+                    className={`flex-1 min-w-[70px] py-2.5 px-1 rounded-xl text-center flex flex-col items-center justify-center border transition-all ${isSelected
+                        ? 'bg-rose/25 border-rose text-charcoal font-bold scale-102'
                         : 'bg-white hover:bg-cream/40 border-beige/30 text-charcoal/80'
-                    }`}
+                      }`}
                   >
                     <span className="text-[10px] uppercase tracking-wider font-semibold opacity-60">
                       {day.slice(0, 3)}
@@ -271,7 +270,7 @@ export default function Workouts({
 
           {/* Active Workout Checklist */}
           <div className="glass-card rounded-3xl p-6 md:p-8 relative">
-            
+
             {/* Binder loops decoration */}
             <div className="absolute left-[-10px] top-8 bottom-8 w-5 flex flex-col justify-between pointer-events-none z-10">
               {[...Array(6)].map((_, i) => (
@@ -280,7 +279,7 @@ export default function Workouts({
             </div>
 
             <div className="pl-4 space-y-6">
-              
+
               {/* Day title & subtitle */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-beige/40 pb-4">
                 <div>
@@ -289,7 +288,7 @@ export default function Workouts({
                   </h3>
                   <p className="text-xs text-charcoal/50 italic font-medium">{scaledWorkout?.subtitle}</p>
                 </div>
-                
+
                 {/* Active Day Completion Stats */}
                 {isActiveDay && totalExercisesCount > 0 && (
                   <div className="flex flex-col items-end text-xs">
@@ -297,7 +296,7 @@ export default function Workouts({
                       Progress: {completedCount} / {totalExercisesCount} Wins
                     </span>
                     <div className="w-40 bg-cream border border-beige/40 rounded-full h-2 mt-1.5 overflow-hidden">
-                      <div 
+                      <div
                         className="bg-sage h-full rounded-full transition-all duration-500"
                         style={{ width: `${progressPercent}%` }}
                       ></div>
@@ -314,24 +313,23 @@ export default function Workouts({
                       <h4 className="text-xs font-semibold uppercase tracking-wider text-charcoal/50 border-b border-beige/25 pb-1">
                         {section.name}
                       </h4>
-                      
+
                       <div className="space-y-2.5">
                         {section.items.map((ex) => {
                           const isCompleted = !!completedExercises[ex.name];
-                          
+
                           return (
                             <div
                               key={ex.name}
                               onClick={() => isActiveDay && isEditable && handleExerciseToggle(ex.name)}
-                              className={`p-4 rounded-2xl border flex items-center justify-between transition-all select-none ${
-                                !isActiveDay 
-                                  ? 'bg-[#FAF8F5]/40 border-beige/20' 
+                              className={`p-4 rounded-2xl border flex items-center justify-between transition-all select-none ${!isActiveDay
+                                  ? 'bg-cream/40 border-beige/20'
                                   : !isEditable
-                                    ? 'bg-[#FAF8F5]/30 border-beige/20 opacity-70 cursor-not-allowed'
-                                    : isCompleted 
-                                      ? 'bg-cream/40 border-beige/45 opacity-80 cursor-pointer' 
+                                    ? 'bg-cream/30 border-beige/20 opacity-70 cursor-not-allowed'
+                                    : isCompleted
+                                      ? 'bg-cream/40 border-beige/45 opacity-80 cursor-pointer'
                                       : 'bg-white border-beige/30 hover:border-rose/30 shadow-2xs cursor-pointer'
-                              }`}
+                                }`}
                             >
                               <div className="flex items-center gap-3">
                                 <div className="space-y-0.5">
@@ -373,13 +371,12 @@ export default function Workouts({
 
                                 {/* Checklist Checkbox (Only interactable on the simulated active day) */}
                                 {ex.type !== 'text' && (
-                                  <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${
-                                    isCompleted 
-                                      ? 'bg-sage border-sage text-white' 
+                                  <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${isCompleted
+                                      ? 'bg-sage border-sage text-white'
                                       : !isActiveDay
                                         ? 'border-beige/40 bg-cream/20'
                                         : 'border-beige hover:border-rose bg-white'
-                                  }`}>
+                                    }`}>
                                     {isCompleted && <Check className="w-3.5 h-3.5" />}
                                   </div>
                                 )}
@@ -416,13 +413,12 @@ export default function Workouts({
                       type="button"
                       onClick={handleToggleBulkComplete}
                       disabled={!isEditable}
-                      className={`w-full sm:w-auto py-3 px-6 rounded-2xl font-serif font-bold text-xs flex items-center justify-center gap-2 border shadow-xs transition-all ${
-                        !isEditable
+                      className={`w-full sm:w-auto py-3 px-6 rounded-2xl font-serif font-bold text-xs flex items-center justify-center gap-2 border shadow-xs transition-all ${!isEditable
                           ? 'bg-cream text-charcoal/40 border-beige/40 cursor-not-allowed'
-                          : activeLog.completed 
-                            ? 'bg-white hover:bg-cream text-charcoal border-beige transform hover:-translate-y-0.5 active:translate-y-0' 
+                          : activeLog.completed
+                            ? 'bg-white hover:bg-cream text-charcoal border-beige transform hover:-translate-y-0.5 active:translate-y-0'
                             : 'bg-rose hover:bg-[#E8C5C8]/90 text-charcoal border-rose/30 shadow-md transform hover:-translate-y-0.5 active:translate-y-0'
-                      }`}
+                        }`}
                     >
                       <Check className="w-4 h-4" />
                       <span>
@@ -439,7 +435,7 @@ export default function Workouts({
 
         {/* Right Side (1 col): Phase selector & Posture Sticky Note */}
         <div className="space-y-6">
-          
+
           {/* Phase Progression Card */}
           <div className="glass-card rounded-3xl p-6 relative">
             <div className="washi-tape absolute top-[-6px] left-8 w-16 h-4 rotate-[-1deg] opacity-60"></div>
@@ -466,13 +462,12 @@ export default function Workouts({
                     type="button"
                     disabled={!isUnlocked}
                     onClick={() => isUnlocked && handlePhaseChange(item.phase)}
-                    className={`w-full text-left p-3.5 rounded-xl border flex flex-col transition-all ${
-                      isCurrent 
-                        ? 'bg-sage/20 border-sage text-charcoal shadow-2xs font-semibold' 
+                    className={`w-full text-left p-3.5 rounded-xl border flex flex-col transition-all ${isCurrent
+                        ? 'bg-sage/20 border-sage text-charcoal shadow-2xs font-semibold'
                         : isUnlocked
                           ? 'bg-white border-beige/35 text-charcoal/70 hover:border-sage/30 cursor-pointer'
                           : 'bg-cream/40 border-dashed border-beige/30 text-charcoal/40 cursor-not-allowed opacity-75'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-2 w-full">
                       <span className="text-sm">{item.emoji}</span>
@@ -499,7 +494,7 @@ export default function Workouts({
           {/* Quick Posture Routine Sticky Note */}
           <div className="bg-buttercream/60 rounded-3xl p-6 border border-beige/45 shadow-xs relative hover:shadow-sm transition-all duration-300">
             <div className="washi-tape absolute top-[-8px] left-1/2 transform -translate-x-1/2 w-20 h-5 rotate-[1.5deg] opacity-70 bg-rose/40"></div>
-            
+
             <button
               type="button"
               onClick={() => setPostureExpanded(!postureExpanded)}
@@ -529,11 +524,10 @@ export default function Workouts({
                       <div
                         key={item.name}
                         onClick={() => isEditable && handlePostureToggle(item.name)}
-                        className={`flex items-center justify-between p-2.5 rounded-xl border text-xs ${
-                          !isEditable
+                        className={`flex items-center justify-between p-2.5 rounded-xl border text-xs ${!isEditable
                             ? 'bg-white/30 border-beige/20 text-charcoal/50 cursor-not-allowed select-none'
                             : 'bg-white/55 border-beige/25 hover:border-rose/20 cursor-pointer'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-2 font-medium">
                           <span className={`${isChecked ? 'line-through text-charcoal/50' : 'text-charcoal'}`}>
@@ -544,11 +538,10 @@ export default function Workouts({
                           <span className="text-[10px] font-mono opacity-80 bg-cream/70 px-1.5 py-0.5 rounded-md font-semibold">
                             {scaled.type === 'reps' ? `${scaled.sets}x${scaled.reps}` : `${scaled.sets}x${scaled.hold}s`}
                           </span>
-                          <div className={`w-4 h-4 rounded-full flex items-center justify-center border transition-all ${
-                            isChecked 
-                              ? 'bg-sage border-sage text-white' 
+                          <div className={`w-4 h-4 rounded-full flex items-center justify-center border transition-all ${isChecked
+                              ? 'bg-sage border-sage text-white'
                               : 'border-beige bg-white'
-                          }`}>
+                            }`}>
                             {isChecked && <Check className="w-2.5 h-2.5" />}
                           </div>
                         </div>

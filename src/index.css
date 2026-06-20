@@ -8,6 +8,11 @@
   --color-buttercream: #F5EBD0;
   --color-charcoal: #423E3A;
   --color-honey: #E8C08A;
+  --color-white: #FFFFFF;
+  --color-tea-amber: #D99C38;
+  --color-badges-from: #FFF5F5;
+  --color-badges-via: #FFFDFB;
+  --color-badges-to: #F5F8F7;
 
   --font-serif: "Playfair Display", Georgia, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", serif;
   --font-sans: "Poppins", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", system-ui, sans-serif;
@@ -15,8 +20,9 @@
 
   --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
-  --animate-bounce-soft: bounce-soft 2s ease-in-out infinite;
+  --animate-bounce-soft: bounce-soft 2s ease-in-out 2;
   --animate-sparkle: sparkle 1s ease-in-out infinite;
+  --animate-slide-in-left: slide-in-left 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Cozy Journal Dot-Grid Paper Background */
@@ -60,6 +66,11 @@
 @keyframes sparkle {
   0%, 100% { opacity: 0.3; transform: scale(0.8); }
   50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }
 
 /* Global Reset & Aesthetic Enhancements */
@@ -113,4 +124,51 @@ button, input, select, textarea, a {
 .glass-card:hover {
   border-color: rgba(232, 197, 200, 0.95); /* Pink hover border */
   box-shadow: 0 12px 30px -8px rgba(232, 197, 200, 0.15); /* Pink hover glow */
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --color-cream: #1F1B18;
+  --color-charcoal: #E6DFD5;
+  --color-white: #2A2420;
+  --color-beige: #3A322C;
+  --color-buttercream: #302824;
+  
+  /* Accent colors made softer and darker for dark mode */
+  --color-rose: #C29094;
+  --color-sage: #7F998D;
+  --color-honey: #D9A45F;
+  
+  --color-badges-from: #2C2421;
+  --color-badges-via: #231C19;
+  --color-badges-to: #1B1513;
+}
+
+/* Dark theme specifics */
+.dark .glass-card {
+  background: var(--color-white);
+  border: 1px solid rgba(194, 144, 148, 0.25);
+  box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.45);
+}
+
+.dark .glass-card:hover {
+  border-color: rgba(217, 156, 56, 0.55);
+  box-shadow: 0 12px 30px -8px rgba(217, 156, 56, 0.12);
+}
+
+.dark .journal-bg {
+  background-color: #1F1B18;
+  background-image: radial-gradient(#3A322C 1.5px, transparent 1.5px);
+}
+
+.dark .binder-ring {
+  background: linear-gradient(90deg, #3A322C 0%, #544941 50%, #2A2420 100%);
+  box-shadow: -1px 2px 3px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Ensure smooth theme transitions */
+body, aside, main, header, .glass-card, button {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }

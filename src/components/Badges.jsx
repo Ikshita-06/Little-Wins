@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { 
-  Sparkles, 
-  Droplet, 
-  Flame, 
-  Award, 
-  Leaf, 
-  Crown, 
-  Trophy, 
-  Heart, 
-  Activity, 
-  Calendar, 
+import {
+  Sparkles,
+  Droplet,
+  Flame,
+  Award,
+  Leaf,
+  Crown,
+  Trophy,
+  Heart,
+  Activity,
+  Calendar,
   Coffee,
   Lock,
   Unlock,
@@ -23,9 +23,9 @@ import { badgesData, badgeCategories, progressionPath } from '../data/badges';
 function getBadgeIllustration(badgeId, extraClasses = 'w-16 h-16 md:w-20 md:h-20') {
   const cleanId = (badgeId || '').toLowerCase();
   return (
-    <img 
-      src={`/badges/${cleanId}.png`} 
-      alt={badgeId} 
+    <img
+      src={`/badges/${cleanId}.png`}
+      alt={badgeId}
       className={`object-contain transition-transform duration-300 ${extraClasses}`}
     />
   );
@@ -76,11 +76,11 @@ export default function Badges({ unlockedBadges = [], setUnlockedBadges }) {
 
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto space-y-8 select-none">
-      
+
       {/* Top Header Banner - Cute morning sunset watercolor wash (static trophy icon) */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#FFF5F5] via-[#FFFDFB] to-[#F5F8F7] border border-beige/40 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-badges-from via-badges-via to-badges-to border border-beige/40 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
         <div className="washi-tape absolute top-0 left-10 w-24 h-5 rotate-[-1.5deg] opacity-75 bg-sage/65"></div>
-        
+
         <div className="flex-1 space-y-2 z-10 text-center md:text-left">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sage/15 text-charcoal text-xs font-semibold border border-sage/10 font-sans">
             <Trophy className="w-3.5 h-3.5 text-sage fill-sage/25" />
@@ -99,7 +99,7 @@ export default function Badges({ unlockedBadges = [], setUnlockedBadges }) {
           <span className="text-3xl font-serif text-charcoal font-bold">{unlockedCount} / {totalBadgesCount}</span>
           <span className="text-[10px] text-charcoal/50 font-bold uppercase tracking-wider mt-0.5">Badges Unlocked</span>
           <div className="w-full bg-cream border border-beige/35 h-2 rounded-full overflow-hidden mt-3 max-w-[120px]">
-            <div 
+            <div
               className="bg-sage h-full rounded-full transition-all duration-700"
               style={{ width: `${progressPercent}%` }}
             ></div>
@@ -124,25 +124,24 @@ export default function Badges({ unlockedBadges = [], setUnlockedBadges }) {
         {/* Trail stepping stones - increased top padding to pt-24 so tooltips are fully visible */}
         <div className="pl-6 pt-24 pb-6 overflow-x-auto scrollbar-none">
           <div className="flex items-center min-w-[900px] justify-between relative px-4">
-            
+
             {/* Background connecting trail line */}
             <div className="absolute left-6 right-6 top-[20px] h-0.5 bg-dashed-line border-b border-dashed border-beige/80 -z-10"></div>
-            
+
             {progressionPath.map((badgeId, index) => {
               const badge = badgesData.find(b => b.id === badgeId);
               if (!badge) return null;
-              
+
               const isUnlocked = unlockedSet.has(badgeId);
 
               return (
                 <div key={badgeId} className="flex flex-col items-center space-y-2 relative group w-20">
                   {/* Stepping stone circle */}
-                  <div 
-                    className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-350 relative ${
-                      isUnlocked 
-                        ? `${badge.colorClasses.split(' ')[0]} border-sage text-charcoal shadow-md scale-105 hover:scale-110` 
-                        : 'bg-[#FAF8F5] border-dashed border-beige/50 text-charcoal/40 opacity-70'
-                    }`}
+                  <div
+                    className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-350 relative ${isUnlocked
+                      ? `${badge.colorClasses.split(' ')[0]} border-sage text-charcoal shadow-md scale-105 hover:scale-110`
+                      : 'bg-cream border-dashed border-beige/50 text-charcoal/40 opacity-70'
+                      }`}
                   >
                     {isUnlocked ? (
                       getBadgeIllustration(badgeId, 'w-7 h-7')
@@ -162,7 +161,7 @@ export default function Badges({ unlockedBadges = [], setUnlockedBadges }) {
                   <span className="text-[9px] font-serif font-bold text-charcoal text-center leading-tight truncate w-full">
                     {badge.title}
                   </span>
-                  
+
                   {/* Hover tooltip card info */}
                   <div className="absolute bottom-[54px] left-1/2 -translate-x-1/2 bg-white border border-beige/70 px-2.5 py-1.5 rounded-xl shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-250 w-32 z-20 text-center space-y-1">
                     <span className="text-[8px] font-bold text-sage/80 uppercase block">Step {index + 1}</span>
@@ -178,7 +177,7 @@ export default function Badges({ unlockedBadges = [], setUnlockedBadges }) {
 
       {/* Categories Tabs & Filter */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 select-none">
-        
+
         {/* Tab Buttons */}
         <div className="flex flex-wrap bg-cream border border-beige/55 p-1 rounded-2xl gap-1 text-xs font-sans w-full md:w-auto">
           {['All', ...badgeCategories].map(cat => {
@@ -196,9 +195,8 @@ export default function Badges({ unlockedBadges = [], setUnlockedBadges }) {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`flex-1 md:flex-none px-3.5 py-1.5 rounded-xl font-medium transition-all cursor-pointer text-center ${
-                  isActive ? activeClass : 'text-charcoal/60 hover:text-charcoal hover:bg-cream/45'
-                }`}
+                className={`flex-1 md:flex-none px-3.5 py-1.5 rounded-xl font-medium transition-all cursor-pointer text-center ${isActive ? activeClass : 'text-charcoal/60 hover:text-charcoal hover:bg-cream/45'
+                  }`}
               >
                 {cat}
               </button>
@@ -215,31 +213,28 @@ export default function Badges({ unlockedBadges = [], setUnlockedBadges }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {filteredBadges.map((badge, idx) => {
           const isUnlocked = unlockedSet.has(badge.id);
-          
+
           // Apply slight alternating tilts for custom scrapbook feel
           const rotation = idx % 3 === 0 ? 'rotate-[-2deg]' : idx % 3 === 1 ? 'rotate-[1deg]' : 'rotate-[-1deg]';
-          
+
           return (
-            <div 
+            <div
               key={badge.id}
-              className={`bg-white p-4 pb-5 rounded-2xl border transition-all duration-305 flex flex-col items-center text-center relative group select-none ${rotation} hover:rotate-0 hover:scale-102 ${
-                isUnlocked 
-                  ? 'border-beige/50 shadow-md hover:shadow-lg' 
-                  : 'border-dashed border-beige/45 bg-white shadow-2xs opacity-55 hover:opacity-85 hover:border-sage/30'
-              }`}
+              className={`bg-white p-4 pb-5 rounded-2xl border transition-all duration-305 flex flex-col items-center text-center relative group select-none ${rotation} hover:rotate-0 hover:scale-102 ${isUnlocked
+                ? 'border-beige/50 shadow-md hover:shadow-lg'
+                : 'border-dashed border-beige/45 bg-white shadow-2xs opacity-55 hover:opacity-85 hover:border-sage/30'
+                }`}
             >
               {/* Top Washi Tape (Unlocked is full color, locked has 40% opacity color) */}
-              <div 
-                className={`washi-tape absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-3.5 opacity-80 ${
-                  badge.colorClasses.split(' ')[0]
-                } ${!isUnlocked && 'opacity-40'}`}
+              <div
+                className={`washi-tape absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-3.5 opacity-80 ${badge.colorClasses.split(' ')[0]
+                  } ${!isUnlocked && 'opacity-40'}`}
               ></div>
 
               {/* Stamp Photo Square */}
-              <div 
-                className={`w-full aspect-square rounded-xl flex flex-col items-center justify-center mb-3 relative overflow-hidden transition-all p-3 ${
-                  badge.colorClasses.split(' ')[0]
-                } border ${isUnlocked ? 'border-beige/10' : 'border-dashed border-beige/25'}`}
+              <div
+                className={`w-full aspect-square rounded-xl flex flex-col items-center justify-center mb-3 relative overflow-hidden transition-all p-3 ${badge.colorClasses.split(' ')[0]
+                  } border ${isUnlocked ? 'border-beige/10' : 'border-dashed border-beige/25'}`}
               >
                 {/* Visual Icon / Lock Overlay */}
                 {isUnlocked ? (
@@ -252,7 +247,7 @@ export default function Badges({ unlockedBadges = [], setUnlockedBadges }) {
                     </div>
                   </>
                 )}
-                
+
                 {/* Confetti sparkle icons for epic/legendary unlocked badges */}
                 {isUnlocked && (badge.rarity === 'Epic' || badge.rarity === 'Legendary') && (
                   <div className="absolute inset-0 pointer-events-none">
@@ -304,7 +299,7 @@ export default function Badges({ unlockedBadges = [], setUnlockedBadges }) {
           );
         })}
       </div>
-      
+
     </div>
   );
 }
