@@ -164,7 +164,8 @@ export default function ProgressTracker({
   setMeasurementsLog,
   simulatedDate,
   waterLog,
-  workoutLog
+  workoutLog,
+  isOnPeriod
 }) {
   // Goal Settings
   const startingWeight = profile.startingWeight || 40;
@@ -815,6 +816,20 @@ export default function ProgressTracker({
                 ))}
               </div>
             </div>
+ 
+            {isOnPeriod && (
+              <div className="ml-4 mb-4 p-4 bg-rose/15 dark:bg-rose/10 border border-rose/25 rounded-2xl flex items-start gap-3 relative overflow-hidden animate-fade-in select-none">
+                <span className="text-lg flex-shrink-0" role="img" aria-label="cloud">☁️</span>
+                <div className="space-y-0.5">
+                  <p className="text-xs font-serif font-bold text-charcoal leading-tight">
+                    Period week may temporarily affect weight.
+                  </p>
+                  <p className="text-[10px] text-charcoal/60 leading-normal font-sans font-medium">
+                    Focus on trends, not single-day numbers. 🤍
+                  </p>
+                </div>
+              </div>
+            )}
  
             {/* SVG Chart Area */}
             <div className="relative w-full h-[250px] bg-white/40 border border-beige/25 rounded-2xl overflow-hidden p-2 flex items-center justify-center ml-4">

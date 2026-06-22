@@ -104,6 +104,11 @@ export default function App() {
     return saved ? JSON.parse(saved) : {};
   });
 
+  const [nutritionEntries, setNutritionEntries] = useState(() => {
+    const saved = localStorage.getItem('nutritionEntries');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [workoutLog, setWorkoutLog] = useState(() => {
     const saved = localStorage.getItem('lw_workouts');
     return saved ? JSON.parse(saved) : {};
@@ -180,6 +185,113 @@ export default function App() {
     localStorage.setItem('lw_badges', JSON.stringify(unlockedBadges));
   }, [unlockedBadges]);
 
+  useEffect(() => {
+    localStorage.setItem('nutritionEntries', JSON.stringify(nutritionEntries));
+  }, [nutritionEntries]);
+
+  // Synchronize nutritionLog totals based on nutritionEntries
+  useEffect(() => {
+    // Group entries by date
+    const entriesByDate = {};
+    nutritionEntries.forEach(entry => {
+      if (!entriesByDate[entry.date]) {
+        entriesByDate[entry.date] = [];
+      }
+      entriesByDate[entry.date].push(entry);
+    });
+
+    setNutritionLog(prevLog => {
+      let changed = false;
+      const nextLog = { ...prevLog };
+
+      // Reset calorie/protein counts for all dates in nextLog
+      Object.keys(nextLog).forEach(date => {
+        const dayLog = nextLog[date];
+        if (dayLog && (
+          dayLog.breakfastCalories !== 0 ||
+          dayLog.breakfastProtein !== 0 ||
+          dayLog.lunchCalories !== 0 ||
+          dayLog.lunchProtein !== 0 ||
+          dayLog.snackCalories !== 0 ||
+          dayLog.snackProtein !== 0 ||
+          dayLog.dinnerCalories !== 0 ||
+          dayLog.dinnerProtein !== 0
+        )) {
+          nextLog[date] = {
+            ...dayLog,
+            breakfastCalories: 0,
+            breakfastProtein: 0,
+            lunchCalories: 0,
+            lunchProtein: 0,
+            snackCalories: 0,
+            snackProtein: 0,
+            dinnerCalories: 0,
+            dinnerProtein: 0
+          };
+          changed = true;
+        }
+      });
+
+      // Sum up the entries for any date that has them
+      Object.keys(entriesByDate).forEach(date => {
+        const dayEntries = entriesByDate[date];
+        const currentDayLog = nextLog[date] || {
+          breakfast: false,
+          breakfastCalories: 0,
+          breakfastProtein: 0,
+          lunch: false,
+          lunchCalories: 0,
+          lunchProtein: 0,
+          snack: false,
+          snackCalories: 0,
+          snackProtein: 0,
+          dinner: false,
+          dinnerCalories: 0,
+          dinnerProtein: 0,
+          notes: ""
+        };
+
+        const sums = {
+          breakfastCalories: 0,
+          breakfastProtein: 0,
+          lunchCalories: 0,
+          lunchProtein: 0,
+          snackCalories: 0,
+          snackProtein: 0,
+          dinnerCalories: 0,
+          dinnerProtein: 0
+        };
+
+        dayEntries.forEach(e => {
+          const mealKey = e.meal.toLowerCase();
+          const key = mealKey === 'snacks' || mealKey === 'snack' ? 'snack' : mealKey;
+          sums[`${key}Calories`] += Number(e.calories || 0);
+          sums[`${key}Protein`] += Number(e.protein || 0);
+        });
+
+        const mealChecked = {
+          breakfast: currentDayLog.breakfast || dayEntries.some(e => e.meal.toLowerCase() === 'breakfast'),
+          lunch: currentDayLog.lunch || dayEntries.some(e => e.meal.toLowerCase() === 'lunch'),
+          snack: currentDayLog.snack || dayEntries.some(e => ['snack', 'snacks'].includes(e.meal.toLowerCase())),
+          dinner: currentDayLog.dinner || dayEntries.some(e => e.meal.toLowerCase() === 'dinner'),
+        };
+
+        const updatedDayLog = {
+          ...currentDayLog,
+          ...sums,
+          ...mealChecked
+        };
+
+        if (JSON.stringify(currentDayLog) !== JSON.stringify(updatedDayLog)) {
+          nextLog[date] = updatedDayLog;
+          changed = true;
+        }
+      });
+
+      return changed ? nextLog : prevLog;
+    });
+  }, [nutritionEntries]);
+
   // Dynamic Badge Unlocking Engine
   useEffect(() => {
     const newlyUnlocked = getNewlyUnlockedBadges(
@@ -189,7 +301,8 @@ export default function App() {
       workoutLog,
       nutritionLog,
       measurementsLog,
-      profile
+      profile,
+      periods
     );
 
     if (newlyUnlocked.length > 0) {
@@ -236,9 +349,10 @@ export default function App() {
   };
 
   const isEditable = checkIfDateIsEditable(simulatedDate);
+  const isOnPeriod = !!periods[simulatedDate];
 
   return (
-    <div className="min-h-screen bg-cream text-charcoal font-sans selection:bg-rose/30">
+    <div className={`min-h-screen bg-cream text-charcoal font-sans selection:bg-rose/30 ${isOnPeriod ? 'period-comfort' : ''}`}>
 
       {/* Sidebar Navigation */}
       <Sidebar
@@ -268,6 +382,24 @@ export default function App() {
 
           {/* Vertical Pink Notebook Margin Line (Desktop only) */}
           <div className="hidden md:block absolute left-12 top-0 bottom-0 w-[1px] bg-rose/40 pointer-events-none"></div>
+
+          {isOnPeriod && (
+            <>
+              {/* Cute corner decorations for period mode */}
+              <div className="absolute top-16 right-4 select-none pointer-events-none text-2xl animate-float opacity-75 z-20">
+                🎀
+              </div>
+              <div className="absolute bottom-4 left-16 select-none pointer-events-none text-2xl animate-float opacity-70 z-20" style={{ animationDelay: '1s' }}>
+                🧸
+              </div>
+              <div className="absolute bottom-20 right-4 select-none pointer-events-none text-2xl animate-float opacity-65 z-20" style={{ animationDelay: '2s' }}>
+                ☁️
+              </div>
+              <div className="absolute top-36 left-4 select-none pointer-events-none text-2xl animate-float opacity-60 z-20 hidden md:block" style={{ animationDelay: '1.5s' }}>
+                🌷
+              </div>
+            </>
+          )}
 
           {/* Top bar with developer date picker simulator */}
           <div className="hidden md:flex items-center justify-between pl-16 pr-8 py-4 border-b border-beige/40 bg-white/50 backdrop-blur-xs select-none">
@@ -322,6 +454,7 @@ export default function App() {
                 setSundayReviews={setSundayReviews}
                 setCurrentTab={setCurrentTab}
                 darkMode={darkMode}
+                isOnPeriod={isOnPeriod}
               />
             )}
 
@@ -349,6 +482,9 @@ export default function App() {
                 waterLog={waterLog}
                 setWaterLog={setWaterLog}
                 isEditable={isEditable}
+                nutritionEntries={nutritionEntries}
+                setNutritionEntries={setNutritionEntries}
+                isOnPeriod={isOnPeriod}
               />
             )}
 
@@ -361,6 +497,7 @@ export default function App() {
                 simulatedDate={simulatedDate}
                 waterLog={waterLog}
                 workoutLog={workoutLog}
+                isOnPeriod={isOnPeriod}
               />
             )}
 
@@ -380,6 +517,7 @@ export default function App() {
                 nutritionLog={nutritionLog}
                 setNutritionLog={setNutritionLog}
                 isEditable={isEditable}
+                setNutritionEntries={setNutritionEntries}
               />
             )}
 

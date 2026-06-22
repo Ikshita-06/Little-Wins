@@ -54,7 +54,8 @@ export default function Nutrition({
   setNutritionLog,
   isEditable,
   nutritionEntries = [],
-  setNutritionEntries
+  setNutritionEntries,
+  isOnPeriod
 }) {
   const targetCalories = profile.targetCalories || 1900;
   const targetProtein = profile.targetProtein || 60;
@@ -207,7 +208,7 @@ export default function Nutrition({
             <span>Cozy Nutrition Space</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-serif text-charcoal leading-tight">
-            🍽 Food Journal
+            Nutrition & Meal Log
           </h2>
           <p className="text-xs md:text-sm text-charcoal/70 font-sans max-w-xl">
             "Fuel your growth one meal at a time." 🤍
@@ -224,6 +225,57 @@ export default function Nutrition({
           />
         </div>
       </div>
+
+      {/* Period Comfort Section */}
+      {isOnPeriod && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch animate-fade-in">
+          {/* Cravings Comfort Card */}
+          <div className="md:col-span-2 p-6 rounded-3xl relative flex flex-col justify-center border border-rose/25 bg-rose/5 dark:bg-rose/10 select-none overflow-hidden shadow-xs hover:shadow-sm transition-all duration-300">
+            <div className="washi-tape absolute top-[-6px] left-10 w-20 h-4 rotate-[-1deg] opacity-75 bg-rose/40"></div>
+            <div className="flex items-start gap-4">
+              <span className="text-3.5xl flex-shrink-0 animate-wiggle-slow" role="img" aria-label="chocolate">🍫</span>
+              <div className="space-y-1.5">
+                <h4 className="text-base font-serif font-bold text-charcoal">
+                  Cravings are normal.
+                </h4>
+                <p className="text-xs md:text-sm text-charcoal/70 leading-relaxed font-medium">
+                  Fueling your body is not failure. Your energy needs fluctuate naturally, so be gentle and nourish yourself with love today. 🤍
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Period-Friendly Ideas Card */}
+          <div className="p-6 rounded-3xl relative border border-rose/25 bg-rose/10 select-none flex flex-col justify-between shadow-xs hover:shadow-sm transition-all duration-300">
+            <div className="washi-tape absolute top-[-8px] left-1/2 -translate-x-1/2 w-16 h-3.5 rotate-[1.5deg] opacity-75 bg-rose/30"></div>
+            <div className="space-y-2">
+              <h4 className="text-xs font-serif font-bold italic tracking-wide text-charcoal/80 flex items-center gap-1.5">
+                <span role="img" aria-label="tulip">🌷</span> Period-Friendly Ideas
+              </h4>
+              <p className="text-[10px] text-charcoal/50 font-medium">Iron & magnesium rich comfort choices:</p>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {[
+                  { name: 'Banana', emoji: '🍌' },
+                  { name: 'Curd', emoji: '🥛' },
+                  { name: 'Dates', emoji: '🌴' },
+                  { name: 'Milk', emoji: '🥛' },
+                  { name: 'Paneer', emoji: '🧀' },
+                  { name: 'Rajma', emoji: '🍛' },
+                  { name: 'Dark Chocolate', emoji: '🍫' }
+                ].map(food => (
+                  <span 
+                    key={food.name} 
+                    className="inline-flex items-center gap-1 text-[10px] bg-white border border-rose/20 text-charcoal px-2 py-0.5 rounded-full font-semibold shadow-2xs hover:scale-102 transition-transform cursor-default"
+                  >
+                    <span>{food.emoji}</span>
+                    <span>{food.name}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Grid: Checklist & Sidebars */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -447,7 +499,7 @@ export default function Nutrition({
       {showAddModal && isEditable && (
         <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-charcoal/20 backdrop-blur-xs select-none overflow-y-auto">
           {/* Modal Container */}
-          <div className="bg-white dark:bg-[#2A2420] border border-beige/60 shadow-2xl rounded-3xl w-full max-w-lg p-6 relative max-h-[90vh] overflow-y-auto journal-bg">
+          <div className="bg-white dark:bg-[#2A2420] border border-beige/60 shadow-2xl rounded-3xl w-full max-w-lg p-6 relative min-h-[400px] max-h-[90vh] overflow-y-auto journal-bg">
 
             {/* Binder spiral style loop details */}
             <div className="absolute top-6 bottom-6 left-2 w-4 flex flex-col justify-around pointer-events-none z-10">

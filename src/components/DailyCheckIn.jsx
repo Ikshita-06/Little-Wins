@@ -37,6 +37,9 @@ export default function DailyCheckIn({
   const [appetite, setAppetite] = useState(5);
   const [isOnPeriod, setIsOnPeriod] = useState(false);
   const [notes, setNotes] = useState('');
+  const [periodFlow, setPeriodFlow] = useState('Medium');
+  const [periodCramps, setPeriodCramps] = useState(2);
+  const [periodComfort, setPeriodComfort] = useState('🙂');
 
   // Local state drafts for the water, workouts, and nutrition logs
   const [draftWater, setDraftWater] = useState(0);
@@ -63,6 +66,9 @@ export default function DailyCheckIn({
     setAppetite(todayCheckIn.appetite || 5);
     setIsOnPeriod(!!periods[simulatedDate]);
     setNotes(todayCheckIn.notes || '');
+    setPeriodFlow(todayCheckIn.periodFlow || 'Medium');
+    setPeriodCramps(todayCheckIn.periodCramps !== undefined ? todayCheckIn.periodCramps : 2);
+    setPeriodComfort(todayCheckIn.periodComfort || '🙂');
 
     // Load logs into drafts
     setDraftWater(waterLog[simulatedDate] || 0);
@@ -83,7 +89,10 @@ export default function DailyCheckIn({
         energy: parseInt(energy),
         appetite: parseInt(appetite),
         period: isOnPeriod,
-        notes: notes
+        notes: notes,
+        periodFlow: isOnPeriod ? periodFlow : undefined,
+        periodCramps: isOnPeriod ? parseInt(periodCramps) : undefined,
+        periodComfort: isOnPeriod ? periodComfort : undefined
       }
     });
 
@@ -146,6 +155,9 @@ export default function DailyCheckIn({
     setAppetite(5);
     setIsOnPeriod(false);
     setNotes('');
+    setPeriodFlow('Medium');
+    setPeriodCramps(2);
+    setPeriodComfort('🙂');
     setDraftWater(0);
     setDraftWorkout({ completed: false });
     setDraftMeals({ breakfast: false, lunch: false, snack: false, dinner: false });
@@ -379,6 +391,82 @@ export default function DailyCheckIn({
                 <span>{isOnPeriod ? 'On Period 🧸' : 'Off Period ☁️'}</span>
               </button>
             </div>
+
+            {isOnPeriod && (
+              <div className="p-4 bg-rose/10 border border-rose/15 rounded-2xl mb-4 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Flow selection */}
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-charcoal/60 uppercase tracking-wider block">🌸 Flow Intensity</label>
+                    <div className="flex gap-1.5">
+                      {[
+                        { key: 'Light', label: 'Light 💗' },
+                        { key: 'Medium', label: 'Medium 🌷' },
+                        { key: 'Heavy', label: 'Heavy ☁️' }
+                      ].map(flow => (
+                        <button
+                          key={flow.key}
+                          type="button"
+                          disabled={!isEditable}
+                          onClick={() => setPeriodFlow(flow.key)}
+                          className={`flex-1 py-1.5 rounded-xl border text-[10px] font-bold transition-all ${
+                            periodFlow === flow.key
+                              ? 'bg-rose border-rose text-charcoal shadow-2xs font-extrabold scale-102'
+                              : 'bg-white border-beige/40 text-charcoal/60 hover:border-rose/20'
+                          }`}
+                        >
+                          {flow.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Cramp Level Slider */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between items-center text-[10px] font-bold text-charcoal/60 uppercase tracking-wider">
+                      <span>⚡ Cramp Level</span>
+                      <span className="font-mono bg-rose/20 text-charcoal px-2 py-0.5 rounded-md text-[9px] font-extrabold">{periodCramps} / 5</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="5"
+                      disabled={!isEditable}
+                      value={periodCramps}
+                      onChange={(e) => setPeriodCramps(parseInt(e.target.value))}
+                      className="w-full accent-rose h-1 bg-white border border-beige/40 rounded-lg cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                {/* Comfort check buttons */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-charcoal/60 uppercase tracking-wider block">🧸 How cozy do you feel?</label>
+                  <div className="flex gap-2 justify-around">
+                    {[
+                      { key: '🥺', label: 'Tender 🥺' },
+                      { key: '☁️', label: 'Low Energy ☁️' },
+                      { key: '🌷', label: 'Comfortable 🌷' },
+                      { key: '🧸', label: 'Cozy 🧸' }
+                    ].map(status => (
+                      <button
+                        key={status.key}
+                        type="button"
+                        disabled={!isEditable}
+                        onClick={() => setPeriodComfort(status.key)}
+                        className={`flex-1 py-1.5 rounded-xl border text-[10px] font-bold transition-all ${
+                          periodComfort === status.key
+                            ? 'bg-rose border-rose text-charcoal shadow-2xs font-extrabold scale-102'
+                            : 'bg-white border-beige/40 text-charcoal/60 hover:border-rose/20'
+                        }`}
+                      >
+                        {status.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Daily Reflections Textarea */}
             <div className="space-y-2">

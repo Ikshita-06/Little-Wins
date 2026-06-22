@@ -172,3 +172,64 @@ body, aside, main, header, .glass-card, button {
   transition-duration: 300ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Period Comfort Theme Overrides */
+.period-comfort {
+  --color-cream: #FFF5F6; /* Soft warm pink-blush background */
+  --color-white: #FFF9FA; /* Warm pink-blush card background */
+  --color-beige: #FCDCE2; /* Soft warm border */
+  --color-buttercream: #FFEBEF; /* Cozy pink buttercream */
+  --color-rose: #F2B8C6; /* Soft warm pink */
+  --color-sage: #ECA3B0; /* Warm peach-pink accent */
+  --color-honey: #F7D2C4; /* Soft peach-amber */
+  --color-charcoal: #5C4B4E; /* Cozy cocoa rose text color */
+}
+
+.dark .period-comfort, .dark.period-comfort {
+  --color-cream: #2C1D1F; /* Cozy dark chocolate-rose background */
+  --color-white: #382628; /* Warm dark pink-brown card */
+  --color-beige: #4A3538; /* Soft dark border */
+  --color-buttercream: #422B2D; /* Deep cozy dark pink-buttercream */
+  --color-rose: #EAA0AC; /* Muted rose highlight */
+  --color-sage: #D88F9A; /* Muted pink highlight */
+  --color-honey: #E6B0A8;
+  --color-charcoal: #F5E6E8; /* Cozy soft cream text color */
+}
+
+/* Cozy layout and skinning enhancements for Period Comfort Mode */
+.period-comfort .glass-card {
+  background: var(--color-white);
+  border: 1px solid rgba(242, 184, 198, 0.4); /* soft rose outline */
+}
+
+.period-comfort .glass-card:hover {
+  border-color: var(--color-rose);
+  box-shadow: 0 12px 30px -8px rgba(242, 184, 198, 0.15);
+}
+
+.period-comfort .journal-bg {
+  background-color: var(--color-cream);
+  background-image: radial-gradient(var(--color-beige) 1.5px, transparent 1.5px);
+}
+
+.dark .period-comfort .washi-tape {
+  background: rgba(74, 53, 56, 0.7);
+  border-left: 2px dashed rgba(245, 230, 232, 0.15);
+  border-right: 2px dashed rgba(245, 230, 232, 0.15);
+}
+
+/* Custom Scrapbook Corner Stickers */
+.scrapbook-sticker {
+  background: var(--color-white);
+  border: 1.5px dashed var(--color-rose);
+  border-radius: 99px;
+  padding: 4px 8px;
+  box-shadow: 0 4px 8px -2px rgba(66, 62, 58, 0.12);
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+  pointer-events: none;
+}
+

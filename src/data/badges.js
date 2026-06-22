@@ -180,6 +180,42 @@ export const badgesData = [
     badgeColor: '#FED7AA'
   },
   {
+    id: 'gentle_with_myself',
+    title: 'Gentle With Myself',
+    category: 'Wellness',
+    unlock: 'Complete 3 period check-ins',
+    description: 'Listening to your body is a form of strength.',
+    rarity: 'Common',
+    rarityStars: 1,
+    iconName: 'Heart',
+    colorClasses: 'bg-rose/10 border-rose/30 text-rose',
+    badgeColor: '#F2B8C6'
+  },
+  {
+    id: 'comfort_first',
+    title: 'Comfort First',
+    category: 'Fitness',
+    unlock: 'Use Gentle Workout Mode 3 times',
+    description: 'Rest, recovery, and gentle movement count too.',
+    rarity: 'Uncommon',
+    rarityStars: 2,
+    iconName: 'Sparkles',
+    colorClasses: 'bg-[#FFF5F6] border-[#F2B8C6] text-[#F2B8C6]',
+    badgeColor: '#F2B8C6'
+  },
+  {
+    id: 'listening_to_my_body',
+    title: 'Listening To My Body',
+    category: 'Consistency',
+    unlock: 'Log 5 check-ins during your period',
+    description: 'Rested and recovered with zero guilt.',
+    rarity: 'Rare',
+    rarityStars: 3,
+    iconName: 'Activity',
+    colorClasses: 'bg-indigo-50 border-indigo-200 text-indigo-500',
+    badgeColor: '#C7D2FE'
+  },
+  {
     id: 'little_wins_legend',
     title: 'Little Wins Legend',
     category: 'Legendary',

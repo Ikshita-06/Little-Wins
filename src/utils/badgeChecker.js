@@ -85,7 +85,8 @@ export const getNewlyUnlockedBadges = (
   workouts = {},
   nutrition = {},
   measurements = [],
-  profile = {}
+  profile = {},
+  periods = {}
 ) => {
   const newlyUnlocked = [];
   const currentUnlockedSet = new Set(unlockedList);
@@ -286,9 +287,49 @@ export const getNewlyUnlockedBadges = (
     }
   }
 
-  // 16. little_wins_legend: Earn all other badges (15 badges)
+  // 17. gentle_with_myself: Complete 3 period check-ins
+  if (!currentUnlockedSet.has('gentle_with_myself')) {
+    let periodCheckinsCount = 0;
+    Object.keys(checkins).forEach(date => {
+      if (periods[date] === true) {
+        periodCheckinsCount++;
+      }
+    });
+    if (periodCheckinsCount >= 3) {
+      newlyUnlocked.push('gentle_with_myself');
+    }
+  }
+
+  // 18. comfort_first: Use Gentle Workout Mode 3 times
+  if (!currentUnlockedSet.has('comfort_first')) {
+    let comfortWorkoutsCount = 0;
+    Object.keys(workouts).forEach(date => {
+      const log = workouts[date];
+      if (log?.completed && log?.workoutType === 'period-comfort') {
+        comfortWorkoutsCount++;
+      }
+    });
+    if (comfortWorkoutsCount >= 3) {
+      newlyUnlocked.push('comfort_first');
+    }
+  }
+
+  // 19. listening_to_my_body: Log 5 check-ins during your period
+  if (!currentUnlockedSet.has('listening_to_my_body')) {
+    let periodCozinessCount = 0;
+    Object.keys(checkins).forEach(date => {
+      if (periods[date] === true) {
+        periodCozinessCount++;
+      }
+    });
+    if (periodCozinessCount >= 5) {
+      newlyUnlocked.push('listening_to_my_body');
+    }
+  }
+
+  // 16. little_wins_legend: Earn all other badges (18 badges)
   if (!currentUnlockedSet.has('little_wins_legend')) {
-    // Count how many of the other 15 badges are already unlocked or newly unlocked in this batch
+    // Count how many of the other badges are already unlocked or newly unlocked in this batch
     const allBadgesIds = badgesData.map(b => b.id).filter(id => id !== 'little_wins_legend');
     const allEarned = allBadgesIds.every(id => currentUnlockedSet.has(id) || newlyUnlocked.includes(id));
     if (allEarned) {

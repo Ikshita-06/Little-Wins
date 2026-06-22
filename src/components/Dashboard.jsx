@@ -22,6 +22,24 @@ const getStickyNoteForDate = (dateStr) => {
   return COZY_STICKY_NOTES[index];
 };
 
+const PERIOD_COMFORT_GREETINGS = [
+  "🌷 Be gentle with yourself today.",
+  "🧸 Rest is productive too.",
+  "🤍 Your body is doing important work.",
+  "☁️ Slow days still count.",
+  "🫶 Progress doesn't pause because you're resting."
+];
+
+const getPeriodComfortGreeting = (dateStr) => {
+  if (!dateStr) return PERIOD_COMFORT_GREETINGS[0];
+  let hash = 0;
+  for (let i = 0; i < dateStr.length; i++) {
+    hash = dateStr.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % PERIOD_COMFORT_GREETINGS.length;
+  return PERIOD_COMFORT_GREETINGS[index];
+};
+
 export default function Dashboard({
   profile,
   setProfile,
@@ -36,7 +54,8 @@ export default function Dashboard({
   sundayReviews,
   setSundayReviews,
   setCurrentTab,
-  darkMode
+  darkMode,
+  isOnPeriod
 }) {
   const [quote, setQuote] = useState(() => getRandomQuote(darkMode));
   const [showSundayReview, setShowSundayReview] = useState(false);
@@ -106,7 +125,15 @@ export default function Dashboard({
   // Mock list of today's quick goals
   const todayTasks = [
     { id: 'water', label: 'Stay hydrated (3L)', completed: todayWater >= 6, icon: Droplet, color: 'text-blue-400 bg-blue-50' },
-    { id: 'workout', label: `Workout: ${currentDayName} Routine`, completed: todayWorkout.completed, icon: Dumbbell, color: 'text-sage bg-sage/10' },
+    { 
+      id: 'workout', 
+      label: todayWorkout.completed
+        ? (todayWorkout.workoutType === 'period-comfort' ? '🧸 Recovery Day Logged' : 'Workout Completed!')
+        : (isOnPeriod ? '🧸 Gentle Recovery Routine' : `Workout: ${currentDayName} Routine`), 
+      completed: todayWorkout.completed, 
+      icon: isOnPeriod ? Heart : Dumbbell, 
+      color: 'text-sage bg-sage/10' 
+    },
     { id: 'checkin', label: 'Daily mood & energy check-in', completed: !!todayCheckIn, icon: Heart, color: 'text-rose bg-rose/10' },
     { id: 'meals', label: 'Log three major meals', completed: todayNutrition.breakfast && todayNutrition.lunch && todayNutrition.dinner, icon: Sparkles, color: 'text-honey bg-honey/10' },
   ];
@@ -120,6 +147,12 @@ export default function Dashboard({
         {/* Banner Washi Tape Decoration */}
         <div className="washi-tape absolute top-0 left-10 w-24 h-5 rotate-[-1deg] opacity-75"></div>
 
+        {isOnPeriod && (
+          <div className="absolute top-2 right-4 scrapbook-sticker rotate-[4deg] z-20">
+            <span>🌸 Period Comfort Mode active</span>
+          </div>
+        )}
+
         <div className="flex-1 space-y-3 z-10 text-center md:text-left">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose/15 text-charcoal text-xs font-semibold border border-rose/10">
             <Sparkles className="w-3.5 h-3.5 text-rose" />
@@ -128,11 +161,11 @@ export default function Dashboard({
           <h2 className="text-3.5xl md:text-4.5xl font-serif text-charcoal leading-tight">
             Hello, <span className="italic">{profile.name || "Lovely"}</span> 🧸
           </h2>
-          <p className="text-sm md:text-base text-charcoal/70 font-sans max-w-md">
-            {quote}
+          <p className="text-sm md:text-base text-charcoal/70 font-sans max-w-md font-medium">
+            {isOnPeriod ? getPeriodComfortGreeting(simulatedDate) : quote}
           </p>
           <div className="font-cursive text-2xl text-rose/85 pt-1">
-            ~ you're doing so wonderful today! 🌸
+            ~ {isOnPeriod ? "be extra gentle with yourself today! 🧸" : "you're doing so wonderful today! 🌸"}
           </div>
         </div>
 
@@ -259,6 +292,11 @@ export default function Dashboard({
           onClick={() => setCurrentTab('checkin')}
           className="relative glass-card p-6 rounded-2xl flex flex-col justify-between h-40 hover:-translate-y-0.5 transition-all duration-300 text-left w-full cursor-pointer group"
         >
+          {isOnPeriod && (
+            <div className="absolute top-2 right-2 scrapbook-sticker rotate-[6deg] z-20 scale-90">
+              <span>🎀</span>
+            </div>
+          )}
           {/* Washi Tape */}
           <div className="washi-tape absolute top-[-6px] left-1/2 transform -translate-x-1/2 w-16 h-4 rotate-[-1deg] opacity-60"></div>
 
@@ -299,6 +337,11 @@ export default function Dashboard({
 
         {/* Workout Streak Card */}
         <div className="relative glass-card p-6 rounded-2xl flex flex-col justify-between h-40 hover:-translate-y-0.5 transition-all duration-300">
+          {isOnPeriod && (
+            <div className="absolute top-2 right-2 scrapbook-sticker rotate-[-5deg] z-20 scale-90">
+              <span>🧸</span>
+            </div>
+          )}
           {/* Washi Tape */}
           <div className="washi-tape absolute top-[-6px] right-6 w-16 h-4 rotate-[1.5deg] opacity-60"></div>
 
@@ -321,6 +364,11 @@ export default function Dashboard({
 
         {/* Weight Journey Card */}
         <div className="relative glass-card p-6 rounded-2xl flex flex-col justify-between h-40 hover:-translate-y-0.5 transition-all duration-300">
+          {isOnPeriod && (
+            <div className="absolute top-2 right-2 scrapbook-sticker rotate-[3deg] z-20 scale-90">
+              <span>☁️</span>
+            </div>
+          )}
           {/* Washi Tape */}
           <div className="washi-tape absolute top-[-6px] left-6 w-16 h-4 rotate-[-1.5deg] opacity-60"></div>
 
@@ -433,9 +481,15 @@ export default function Dashboard({
               <span>Hydration Status</span>
               <Droplet className="w-4 h-4 text-blue-400 fill-blue-50" />
             </h4>
-            <p className="text-xs text-charcoal/50 mb-3 font-cursive text-sm">
+            <p className="text-xs text-charcoal/50 mb-1 font-cursive text-sm">
               Daily goal: 3 Litres
             </p>
+
+            {isOnPeriod && (
+              <div className="my-1.5 text-[10px] text-rose font-bold bg-rose/10 border border-rose/20 rounded-lg p-2 text-center">
+                🫧 Hydration helps. Even small sips count today.
+              </div>
+            )}
 
             <div className="flex flex-wrap gap-2.5 my-3.5 justify-center">
               {[...Array(6)].map((_, i) => {
@@ -456,6 +510,16 @@ export default function Dashboard({
                 {((todayWater * 500) / 1000).toFixed(1)}L
               </span>
               <span className="text-xs text-charcoal/60 ml-1">/ 3.0L Met</span>
+            </div>
+
+            <div className="text-center mt-1">
+              {todayWater >= 6 ? (
+                <span className="text-[10px] bg-rose/20 text-charcoal px-2.5 py-0.5 rounded-full font-bold uppercase border border-rose/10 inline-block">Goal Met! 🫧</span>
+              ) : isOnPeriod ? (
+                <span className="text-[10px] text-rose font-bold italic">🌷 You're doing your best.</span>
+              ) : (
+                <span className="text-[10px] text-charcoal/50 font-medium font-mono">{(3.0 - (todayWater * 0.5)).toFixed(1)}L remaining</span>
+              )}
             </div>
 
             <button

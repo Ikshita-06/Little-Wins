@@ -28,6 +28,21 @@ export default function Workouts({
   // Navigation: state to track which day is currently being viewed/selected
   const [selectedDay, setSelectedDay] = useState(currentDayName);
   const [postureExpanded, setPostureExpanded] = useState(false);
+  const [cozyAffirmation, setCozyAffirmation] = useState('');
+
+  const isOnPeriod = !!periods[simulatedDate];
+
+  const periodComfortWorkout = {
+    title: "🌷 Period Comfort Routine",
+    subtitle: "Gentle movement, rest, and recovery count too.",
+    exercises: [
+      { name: "Child's Pose, Cat Cow & Cobra Stretch 🧘‍♀️", target: "☁️ Gentle Stretch", isComfort: true, desc: "Cat Cow 2x10, Cobra 2x20s, Child's Pose 1 min" },
+      { name: "10–20 Minute Slow Walk 🚶‍♀️", target: "🚶 Cozy Walk", isComfort: true, desc: "Gentle walk to relax your muscles" },
+      { name: "Drink an extra glass of water 🫧", target: "🫧 Hydration Check", isComfort: true, desc: "Support your body with pure hydration" },
+      { name: "Eat a proper meal or snack 🍫", target: "🍫 Nourish Yourself", isComfort: true, desc: "Fuel your body with wholesome nutrition" },
+      { name: "Take guilt-free recovery time 🧸", target: "🧸 Rest Intentionally", isComfort: true, desc: "Put on comfortable clothes and let your mind rest" }
+    ]
+  };
 
   // Sync selectedDay with simulatedDate changes (so it defaults to today's schedule)
   useEffect(() => {
@@ -57,6 +72,78 @@ export default function Workouts({
       ...prev,
       phase: phaseNum
     }));
+  };
+
+  // Comfort routine toggler
+  const handleComfortToggle = (exerciseName) => {
+    if (!isEditable) return;
+    const updatedCompleted = { ...completedExercises };
+    const wasChecked = !!updatedCompleted[exerciseName];
+
+    if (wasChecked) {
+      delete updatedCompleted[exerciseName];
+    } else {
+      updatedCompleted[exerciseName] = true;
+    }
+
+    const checkedCount = Object.keys(updatedCompleted).length;
+    const isCompleted = checkedCount >= 2;
+
+    setWorkoutLog({
+      ...workoutLog,
+      [simulatedDate]: {
+        ...activeLog,
+        completedExercises: updatedCompleted,
+        completed: isCompleted,
+        workoutType: 'period-comfort'
+      }
+    });
+
+    const wasWorkoutCompleted = activeLog.completed || false;
+    if (isCompleted && !wasWorkoutCompleted) {
+      setProfile(prev => ({ ...prev, workoutStreak: prev.workoutStreak + 1 }));
+    } else if (!isCompleted && wasWorkoutCompleted) {
+      setProfile(prev => ({ ...prev, workoutStreak: Math.max(0, prev.workoutStreak - 1) }));
+    }
+  };
+
+  // Log Rest Day action
+  const handleLogCozyRestDay = () => {
+    if (!isEditable) return;
+    
+    const wasCompleted = activeLog.completed || false;
+    const updatedCompleted = {};
+    periodComfortWorkout.exercises.forEach(ex => {
+      updatedCompleted[ex.name] = true;
+    });
+
+    setWorkoutLog({
+      ...workoutLog,
+      [simulatedDate]: {
+        ...activeLog,
+        completed: true,
+        completedExercises: updatedCompleted,
+        workoutType: 'period-comfort',
+        streakProtected: true
+      }
+    });
+
+    if (!wasCompleted) {
+      setProfile(prev => ({ ...prev, workoutStreak: prev.workoutStreak + 1 }));
+    }
+
+    const affirmations = [
+      "🌷 Resting is not quitting.",
+      "🤍 Recovery is productive.",
+      "☁️ Your body deserves kindness.",
+      "🫶 Small wins count today too.",
+      "🧸 You took care of yourself today."
+    ];
+    const randomIndex = Math.floor(Math.random() * affirmations.length);
+    setCozyAffirmation(affirmations[randomIndex]);
+    setTimeout(() => {
+      setCozyAffirmation('');
+    }, 4000);
   };
 
   // Toggle individual exercise completion state
@@ -202,16 +289,35 @@ export default function Workouts({
       {/* Top Banner and Cozy Intro */}
       <div className="relative rounded-3xl overflow-hidden glass-card p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="washi-tape absolute top-0 left-10 w-24 h-5 rotate-[-1.5deg] opacity-75"></div>
+
+        {isOnPeriod && (
+          <div className="absolute top-2 right-4 scrapbook-sticker rotate-[4deg] z-20">
+            <span>🌸 Period Comfort Mode active</span>
+          </div>
+        )}
+
         <div className="flex-1 space-y-2 z-10 text-center md:text-left">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose/15 text-charcoal text-xs font-semibold border border-rose/10">
-            <Dumbbell className="w-3.5 h-3.5 text-rose" />
-            <span>Cozy Fitness Planner 🤍</span>
+            {isOnPeriod ? (
+              <>
+                <Heart className="w-3.5 h-3.5 text-rose fill-rose/20" />
+                <span>Period Comfort Mode active 🧸</span>
+              </>
+            ) : (
+              <>
+                <Dumbbell className="w-3.5 h-3.5 text-rose" />
+                <span>Cozy Fitness Planner 🤍</span>
+              </>
+            )}
           </div>
-          <h2 className="text-3xl md:text-4xl font-serif text-charcoal leading-tight">
-            Workout & Movement Space
+          <h2 className="text-3xl md:text-4xl font-serif text-charcoal leading-tight font-bold">
+            {isOnPeriod ? "Rest, Restore & Recover" : "Workout & Movement Space"}
           </h2>
           <p className="text-xs md:text-sm text-charcoal/70 font-sans max-w-xl">
-            A quiet space to nourish your muscles and bones. Tweak your training phase, track today's workout progression, or complete a light posture stretch.
+            {isOnPeriod 
+              ? "Your body is doing important work today. Swap standard exercises for a cozy rest day, a light stretch, or a slow walk. We protect and preserve your streak!" 
+              : "A quiet space to nourish your muscles and bones. Tweak your training phase, track today's workout progression, or complete a light posture stretch."
+            }
           </p>
         </div>
         <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-beige/40 shadow-xs flex-shrink-0">
@@ -284,13 +390,13 @@ export default function Workouts({
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-beige/40 pb-4">
                 <div>
                   <h3 className="text-2xl font-serif text-charcoal flex items-center gap-2">
-                    <span>{scaledWorkout?.title}</span>
+                    <span>{isOnPeriod ? "🌷 Period Comfort Routine" : scaledWorkout?.title}</span>
                   </h3>
-                  <p className="text-xs text-charcoal/50 italic font-medium">{scaledWorkout?.subtitle}</p>
+                  <p className="text-xs text-charcoal/50 italic font-medium">{isOnPeriod ? "Gentle movement, rest, and recovery count too." : scaledWorkout?.subtitle}</p>
                 </div>
 
                 {/* Active Day Completion Stats */}
-                {isActiveDay && totalExercisesCount > 0 && (
+                {isActiveDay && !isOnPeriod && totalExercisesCount > 0 && (
                   <div className="flex flex-col items-end text-xs">
                     <span className="font-semibold text-charcoal/70">
                       Progress: {completedCount} / {totalExercisesCount} Wins
@@ -306,7 +412,86 @@ export default function Workouts({
               </div>
 
               {/* Render Exercise Categories */}
-              {workoutSections.length > 0 ? (
+              {isOnPeriod ? (
+                /* Period Comfort Routine Checklist */
+                <div className="space-y-6">
+                  <div className="bg-rose/10 border border-rose/20 p-4.5 rounded-2xl relative select-none flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-bold text-charcoal flex items-center gap-1.5 font-serif">
+                        <span>🧸 Period Comfort Active</span>
+                      </h4>
+                      <p className="text-xs text-charcoal/60 leading-relaxed font-medium">
+                        Rest is productive too. Complete any **2 comfort wins** below, or log a rest day.
+                      </p>
+                    </div>
+                    {isEditable && (
+                      <button
+                        type="button"
+                        onClick={handleLogCozyRestDay}
+                        className={`py-2 px-4 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer border transition-all ${
+                          activeLog.completed
+                            ? 'bg-cream border-beige/40 text-charcoal/50'
+                            : 'bg-rose hover:bg-[#E8C5C8]/90 border-rose/30 text-charcoal shadow-xs hover:scale-102'
+                        }`}
+                      >
+                        <span>🧸 Log Cozy Rest Day</span>
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-charcoal/50 border-b border-beige/25 pb-1">
+                      Comfort Choices (Do any 2 or click rest day)
+                    </h4>
+
+                    <div className="space-y-2.5">
+                      {periodComfortWorkout.exercises.map((ex) => {
+                        const isCompleted = !!completedExercises[ex.name];
+
+                        return (
+                          <div
+                            key={ex.name}
+                            onClick={() => isEditable && handleComfortToggle(ex.name)}
+                            className={`p-4 rounded-2xl border flex items-center justify-between transition-all select-none ${
+                              !isEditable
+                                ? 'bg-cream/30 border-beige/20 opacity-70 cursor-not-allowed'
+                                : isCompleted
+                                  ? 'bg-cream/40 border-beige/45 opacity-80 cursor-pointer'
+                                  : 'bg-white border-beige/30 hover:border-rose/30 shadow-2xs cursor-pointer'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="space-y-0.5">
+                                <span className={`text-sm font-medium ${isCompleted ? 'line-through text-charcoal/50' : 'text-charcoal'}`}>
+                                  {ex.name}
+                                </span>
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/40 bg-cream px-1.5 py-0.5 rounded-md border border-beige/20 font-mono">
+                                    {ex.target}
+                                  </span>
+                                  <span className="text-[10px] text-charcoal/40 italic">
+                                    {ex.desc}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-4">
+                              <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${
+                                isCompleted
+                                  ? 'bg-sage border-sage text-white'
+                                  : 'border-beige hover:border-rose bg-white'
+                              }`}>
+                                {isCompleted && <Check className="w-3.5 h-3.5" />}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              ) : workoutSections.length > 0 ? (
                 <div className="space-y-6">
                   {workoutSections.map((section) => (
                     <div key={section.name} className="space-y-3">
@@ -401,6 +586,15 @@ export default function Workouts({
                   <p>
                     You are previewing **{selectedDay}'s** schedule. To check off items and log logs, please set the **Journal Date** at the top right to fall on a **{selectedDay}**.
                   </p>
+                </div>
+              ) : isOnPeriod ? (
+                <div className="pt-4 border-t border-beige/25 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <p className="text-xs text-charcoal/50 italic">
+                    Log comfort activities or a cozy rest day. Streak: **{profile.workoutStreak} Days** (Preserved 🧸)
+                  </p>
+                  <div className="text-xs font-bold text-rose bg-rose/10 px-4 py-2 rounded-xl border border-rose/25 font-serif">
+                    {activeLog.completed ? "🌷 Comfort Complete / Recovery Logged 🧸" : "🌸 Rest Mode Active"}
+                  </div>
                 </div>
               ) : (
                 /* Complete Active Workout Action Card */
@@ -559,6 +753,15 @@ export default function Workouts({
         </div>
 
       </div>
+
+      {/* Floating Cozy Affirmation popup alert */}
+      {cozyAffirmation && (
+        <div className="fixed bottom-6 right-6 z-50 bg-cream border border-rose rounded-2xl p-4 shadow-lg flex items-center gap-3 animate-bounce-soft">
+          <div className="w-2.5 h-full absolute left-0 top-0 bottom-0 bg-rose rounded-l-2xl"></div>
+          <span className="text-xl">🧸</span>
+          <span className="text-xs font-medium text-charcoal font-sans">{cozyAffirmation}</span>
+        </div>
+      )}
 
     </div>
   );
