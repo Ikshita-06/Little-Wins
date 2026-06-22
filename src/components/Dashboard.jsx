@@ -122,7 +122,7 @@ export default function Dashboard({
 
         <div className="flex-1 space-y-3 z-10 text-center md:text-left">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose/15 text-charcoal text-xs font-semibold border border-rose/10">
-            <Sparkles className="w-3.5 h-3.5 text-rose animate-sparkle" />
+            <Sparkles className="w-3.5 h-3.5 text-rose" />
             <span>Cozy space for self-love 🤍</span>
           </div>
           <h2 className="text-3.5xl md:text-4.5xl font-serif text-charcoal leading-tight">
@@ -304,7 +304,7 @@ export default function Dashboard({
 
           <div className="flex items-center justify-between text-charcoal/60">
             <span className="text-xs uppercase font-semibold tracking-wider">Day Streak</span>
-            <Flame className="w-5 h-5 text-rose fill-rose/25 animate-pulse-slow" />
+            <Flame className="w-5 h-5 text-rose fill-rose/25" />
           </div>
           <div className="my-2">
             <div className="text-3xl font-serif text-charcoal">

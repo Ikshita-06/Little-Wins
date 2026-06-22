@@ -28,7 +28,8 @@ export default function DailyCheckIn({
   setWorkoutLog,
   nutritionLog,
   setNutritionLog,
-  isEditable
+  isEditable,
+  setNutritionEntries
 }) {
   // Local states for the current form inputs
   const [selectedMood, setSelectedMood] = useState('');
@@ -180,6 +181,11 @@ export default function DailyCheckIn({
     delete updatedNutrition[simulatedDate];
     setNutritionLog(updatedNutrition);
 
+    // 7. Clear food journal entries for this date
+    if (setNutritionEntries) {
+      setNutritionEntries(prev => prev.filter(e => e.date !== simulatedDate));
+    }
+
     // Show a cozy confirmation message
     setSavedMessage('Daily page cleared! 🤍');
     setTimeout(() => {
@@ -284,7 +290,7 @@ export default function DailyCheckIn({
                       {opt.emoji}
                     </span>
                     <span className="text-[11px] font-bold tracking-tight">{opt.label}</span>
-                    <span className="text-[9px] text-charcoal/50 leading-tight mt-0.5 line-clamp-1">{opt.desc}</span>
+                    <span className="text-[9px] text-charcoal/50 leading-tight mt-0.5">{opt.desc}</span>
                   </button>
                 );
               })}

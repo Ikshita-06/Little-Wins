@@ -1046,7 +1046,7 @@ export default function ProgressTracker({
                 value={toDisplay(latestLog.wrist, measurementUnit)} 
                 change={getCurrentDimensionChange('wrist')} 
                 tapeColor="bg-sage/35"
-                labelColor="bg-[#FAF8F5] border border-beige/20 text-charcoal/80"
+                labelColor="bg-cream border border-beige/20 text-charcoal/80"
                 rotate="rotate-[-1.5deg]"
                 unit={measurementUnit}
               />
@@ -1218,7 +1218,7 @@ export default function ProgressTracker({
  
                             {/* Notes/Reflection diary list */}
                             {item.notes && (
-                              <div className="bg-[#FAF8F5]/70 border border-beige/35 rounded-xl p-2.5 text-xs text-charcoal/80 mt-1">
+                              <div className="bg-cream/70 border border-beige/35 rounded-xl p-2.5 text-xs text-charcoal/80 mt-1">
                                 <span className="font-semibold block text-[9px] text-charcoal/45 uppercase tracking-wider mb-0.5 font-sans">Diary Reflection</span>
                                 <p className="font-cursive text-[15px] leading-relaxed text-charcoal/85 italic">
                                   "{item.notes}"
@@ -1467,7 +1467,7 @@ export default function ProgressTracker({
                     value={noteInput}
                     onChange={(e) => setNoteInput(e.target.value)}
                     rows="2"
-                    className="w-full bg-[#FAF8F5]/60 border border-beige/65 rounded-xl px-3 py-2 text-xs text-charcoal focus:border-sage outline-hidden font-cursive text-[17px] leading-relaxed placeholder-charcoal/30 resize-none"
+                    className="w-full bg-cream/60 border border-beige/65 rounded-xl px-3 py-2 text-xs text-charcoal focus:border-sage outline-hidden font-cursive text-[17px] leading-relaxed placeholder-charcoal/30 resize-none"
                   />
                 </div>
  

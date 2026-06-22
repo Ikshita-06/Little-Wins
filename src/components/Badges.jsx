@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   Droplet,
@@ -47,6 +47,10 @@ function BinderHoles() {
 export default function Badges({ unlockedBadges = [], setUnlockedBadges }) {
   const [activeCategory, setActiveCategory] = useState('All');
   const unlockedSet = new Set(unlockedBadges);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
   // Calculate totals
   const totalBadgesCount = badgesData.length;

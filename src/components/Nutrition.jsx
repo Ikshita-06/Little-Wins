@@ -203,11 +203,11 @@ export default function Nutrition({
         <div className="washi-tape absolute top-0 left-10 w-24 h-5 rotate-[-1.5deg] opacity-75"></div>
         <div className="flex-1 space-y-2 z-10 text-center md:text-left">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose/15 text-charcoal text-xs font-semibold border border-rose/10">
-            <Sparkles className="w-3.5 h-3.5 text-rose animate-sparkle" />
+            <Sparkles className="w-3.5 h-3.5 text-rose" />
             <span>Cozy Nutrition Space</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-serif text-charcoal leading-tight">
-            Nutrition & Meal Log
+            🍽 Food Journal
           </h2>
           <p className="text-xs md:text-sm text-charcoal/70 font-sans max-w-xl">
             "Fuel your growth one meal at a time." 🤍
@@ -366,7 +366,7 @@ export default function Nutrition({
                       {meals.map(entry => (
                         <div
                           key={entry.id}
-                          className="p-4 bg-cream/35 border border-beige/40 rounded-2.5xl flex items-center justify-between gap-4 hover:shadow-xs transition-all duration-300 relative group animate-float-slow"
+                          className="p-4 bg-cream/35 border border-beige/40 rounded-2.5xl flex items-center justify-between gap-4 hover:shadow-xs transition-all duration-300 relative group"
                         >
                           <div className="flex items-center gap-3">
                             <span className="text-3.5xl" role="img" aria-label="food-emoji">
@@ -565,7 +565,7 @@ export default function Nutrition({
 
               {/* Selected Food Info & Portion Section */}
               {selectedFood && (
-                <div className="space-y-4 animate-float-slow">
+                <div className="space-y-4">
 
                   {/* Food Badge */}
                   <div className="p-3 bg-cream/45 border border-beige/40 rounded-xl flex items-center gap-2.5 shadow-2xs">
@@ -638,7 +638,7 @@ export default function Nutrition({
                   </div>
 
                   {/* Live Preview Display Box */}
-                  <div className="bg-[#FAF8F5] border border-dashed border-beige/70 p-3.5 rounded-2xl space-y-1 text-center select-none shadow-inner">
+                  <div className="bg-cream border border-dashed border-beige/70 p-3.5 rounded-2xl space-y-1 text-center select-none shadow-inner">
                     <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-charcoal/45 block mb-1">
                       Live Preview 🌷
                     </span>
