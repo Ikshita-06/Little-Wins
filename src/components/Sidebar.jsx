@@ -10,10 +10,11 @@ import {
   Flame,
   User,
   Menu,
-  X
+  X,
+  Trash2
 } from 'lucide-react';
 
-export default function Sidebar({ currentTab, setCurrentTab, profile, darkMode, toggleDarkMode }) {
+export default function Sidebar({ currentTab, setCurrentTab, profile, darkMode, toggleDarkMode, handleResetData }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const menuItems = [
     { id: 'dashboard', name: 'Dashboard', icon: Home},
@@ -119,14 +120,23 @@ export default function Sidebar({ currentTab, setCurrentTab, profile, darkMode, 
 
             {/* User Card at bottom */}
             <div className="mt-auto pt-6 border-t border-beige/40">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-rose/30 flex items-center justify-center text-rose border border-rose/10 font-bold font-serif">
-                  LW
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-rose/30 flex items-center justify-center text-rose border border-rose/10 font-bold font-serif">
+                    LW
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-charcoal/50">Wellness Companion</div>
+                    <div className="text-xs font-semibold text-charcoal">Consistency Queen 👸</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-xs text-charcoal/50">Wellness Companion</div>
-                  <div className="text-sm font-semibold text-charcoal">Consistency Queen 👸</div>
-                </div>
+                <button
+                  onClick={handleResetData}
+                  className="p-2 hover:bg-rose/10 rounded-xl text-rose/60 hover:text-rose cursor-pointer transition-colors"
+                  title="Reset App Data"
+                >
+                  <Trash2 className="w-4.5 h-4.5" />
+                </button>
               </div>
             </div>
           </aside>
@@ -208,14 +218,23 @@ export default function Sidebar({ currentTab, setCurrentTab, profile, darkMode, 
 
         {/* User Card at bottom */}
         <div className="mt-auto pt-6 border-t border-beige/40">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-rose/30 flex items-center justify-center text-rose border border-rose/10 font-bold font-serif">
-              LW
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-rose/30 flex items-center justify-center text-rose border border-rose/10 font-bold font-serif">
+                LW
+              </div>
+              <div>
+                <div className="text-[10px] text-charcoal/50">Wellness Companion</div>
+                <div className="text-xs font-semibold text-charcoal">Consistency Queen 👸</div>
+              </div>
             </div>
-            <div>
-              <div className="text-xs text-charcoal/50">Wellness Companion</div>
-              <div className="text-sm font-semibold text-charcoal">Consistency Queen 👸</div>
-            </div>
+            <button
+              onClick={handleResetData}
+              className="p-2 hover:bg-rose/10 rounded-xl text-rose/60 hover:text-rose cursor-pointer transition-colors"
+              title="Reset App Data"
+            >
+              <Trash2 className="w-4.5 h-4.5" />
+            </button>
           </div>
         </div>
       </aside>

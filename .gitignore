@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Personal configuration
+src/data/personalInfo.js
+src/data/workoutData.js
+src/data/foodDatabase.js

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from './components/Sidebar';
+import { personalInfo } from './data/personalInfo';
 import Dashboard from './components/Dashboard';
 import Workouts from './components/Workouts';
 import Nutrition from './components/Nutrition';
@@ -71,22 +72,48 @@ export default function App() {
   // --- LOCALSTORAGE SYNCED STATES ---
   const [profile, setProfile] = useState(() => {
     const saved = localStorage.getItem('lw_profile');
-    const initial = saved ? JSON.parse(saved) : {
-      age: 20,
-      height: "5'0\"",
-      startingWeight: 39,
-      weight: 39,
-      goalWeight: 45,
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed.maxUnlockedPhase === undefined) {
+        parsed.maxUnlockedPhase = parsed.phase || 1;
+      }
+      return parsed;
+    }
+    
+    // Fallback to personalInfo defaults if present and has valid values
+    if (personalInfo && personalInfo.age !== null && personalInfo.age !== undefined && personalInfo.age !== '') {
+      return {
+        age: personalInfo.age,
+        height: personalInfo.height,
+        startingWeight: personalInfo.startingWeight,
+        weight: personalInfo.weight,
+        goalWeight: personalInfo.goalWeight,
+        targetCalories: personalInfo.targetCalories || 1900,
+        targetProtein: personalInfo.targetProtein || 60,
+        phase: 1,
+        maxUnlockedPhase: 1,
+        workoutStreak: 0,
+        lastActiveDate: null,
+        consistency: 85,
+        isConfigured: true,
+      };
+    }
+
+    return {
+      age: '',
+      height: '',
+      startingWeight: '',
+      weight: '',
+      goalWeight: '',
+      targetCalories: 1900,
+      targetProtein: 60,
       phase: 1,
       maxUnlockedPhase: 1,
       workoutStreak: 0,
       lastActiveDate: null,
       consistency: 85,
+      isConfigured: false,
     };
-    if (initial && initial.maxUnlockedPhase === undefined) {
-      initial.maxUnlockedPhase = initial.phase || 1;
-    }
-    return initial;
   });
 
   const [periods, setPeriods] = useState(() => {
@@ -116,10 +143,82 @@ export default function App() {
 
   const [measurementsLog, setMeasurementsLog] = useState(() => {
     const saved = localStorage.getItem('lw_measurements');
-    return saved ? JSON.parse(saved) : [
-      { date: '2026-06-10', weight: 40, waist: 24, chest: 32, hips: 34, thigh: 19, wrist: 5 }
-    ];
+    if (saved) return JSON.parse(saved);
+
+    if (personalInfo && personalInfo.measurements && personalInfo.measurements.length > 0) {
+      return personalInfo.measurements;
+    }
+    return [];
   });
+
+  // Setup form state
+  const [setupData, setSetupData] = useState({
+    age: '',
+    height: '',
+    startingWeight: '',
+    weight: '',
+    goalWeight: '',
+    targetCalories: '1900',
+    targetProtein: '60',
+  });
+
+  const handleSetupSubmit = (e) => {
+    e.preventDefault();
+    const ageNum = Number(setupData.age);
+    const startingWeightNum = Number(setupData.startingWeight);
+    const weightNum = Number(setupData.weight);
+    const goalWeightNum = Number(setupData.goalWeight);
+    const targetCaloriesNum = Number(setupData.targetCalories) || 1900;
+    const targetProteinNum = Number(setupData.targetProtein) || 60;
+
+    const newProfile = {
+      age: ageNum,
+      height: setupData.height,
+      startingWeight: startingWeightNum,
+      weight: weightNum,
+      goalWeight: goalWeightNum,
+      targetCalories: targetCaloriesNum,
+      targetProtein: targetProteinNum,
+      phase: 1,
+      maxUnlockedPhase: 1,
+      workoutStreak: 0,
+      lastActiveDate: null,
+      consistency: 85,
+      isConfigured: true,
+    };
+
+    const initialMeasurements = [
+      {
+        date: simulatedDate,
+        weight: weightNum,
+        waist: 0,
+        chest: 0,
+        hips: 0,
+        thigh: 0,
+        wrist: 0,
+        notes: "Setup profile entry"
+      }
+    ];
+
+    setProfile(newProfile);
+    setMeasurementsLog(initialMeasurements);
+  };
+
+  const handleResetData = () => {
+    if (window.confirm("Are you sure you want to reset all your data? This will permanently delete your profile, measurements log, workout logs, water logs, and nutrition entries.")) {
+      localStorage.removeItem('lw_profile');
+      localStorage.removeItem('lw_periods');
+      localStorage.removeItem('lw_water');
+      localStorage.removeItem('lw_nutrition');
+      localStorage.removeItem('nutritionEntries');
+      localStorage.removeItem('lw_workouts');
+      localStorage.removeItem('lw_measurements');
+      localStorage.removeItem('lw_checkins');
+      localStorage.removeItem('lw_sunday_reviews');
+      localStorage.removeItem('lw_badges');
+      window.location.reload();
+    }
+  };
 
   const [dailyCheckIns, setDailyCheckIns] = useState(() => {
     const saved = localStorage.getItem('lw_checkins');
@@ -351,6 +450,133 @@ export default function App() {
   const isEditable = checkIfDateIsEditable(simulatedDate);
   const isOnPeriod = !!periods[simulatedDate];
 
+  if (!profile.isConfigured) {
+    return (
+      <div className="min-h-screen bg-[#FAF8F5] text-[#423E3A] font-sans selection:bg-[#E8C5C8]/30 flex items-center justify-center p-4">
+        {/* Cozy Setup Box */}
+        <div className="w-full max-w-md bg-[#FFFFFF] rounded-3xl border border-[#EADBC8]/60 shadow-xl p-8 relative overflow-hidden">
+          {/* Top binder style dots */}
+          <div className="absolute top-0 left-0 right-0 h-4 bg-[#EADBC8]/20 border-b border-[#EADBC8]/35 flex justify-around px-8">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="w-3 h-3 rounded-full bg-[#FAF8F5] border border-[#EADBC8]/60 -mt-1.5"></div>
+            ))}
+          </div>
+
+          <div className="mt-4 text-center">
+            <span className="text-3xl">🌸</span>
+            <h2 className="text-2xl font-serif font-bold text-[#423E3A] mt-2">Welcome to Little Wins</h2>
+            <p className="text-xs text-[#423E3A]/65 mt-1 font-serif italic">Let's set up your personal companion profile</p>
+          </div>
+
+          <form onSubmit={handleSetupSubmit} className="space-y-4 mt-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-[#423E3A]/60 uppercase tracking-wider mb-1.5">Age</label>
+                <input
+                  type="number"
+                  required
+                  placeholder="e.g. 20"
+                  value={setupData.age}
+                  onChange={e => setSetupData({...setupData, age: e.target.value})}
+                  className="w-full text-xs bg-[#FAF8F5] border border-[#EADBC8] text-[#423E3A] placeholder-[#423E3A]/45 rounded-xl px-3 py-2 outline-hidden focus:border-[#B5C9C0]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[#423E3A]/60 uppercase tracking-wider mb-1.5">Height</label>
+                <input
+                  type="text"
+                  required
+                  placeholder={"e.g. 5'0\" or 160cm"}
+                  value={setupData.height}
+                  onChange={e => setSetupData({...setupData, height: e.target.value})}
+                  className="w-full text-xs bg-[#FAF8F5] border border-[#EADBC8] text-[#423E3A] placeholder-[#423E3A]/45 rounded-xl px-3 py-2 outline-hidden focus:border-[#B5C9C0]"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-[10px] font-semibold text-[#423E3A]/60 uppercase tracking-wider mb-1.5 leading-tight">Start Weight (kg)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  required
+                  placeholder="e.g. 40"
+                  value={setupData.startingWeight}
+                  onChange={e => {
+                    const val = e.target.value;
+                    setSetupData(prev => ({
+                      ...prev,
+                      startingWeight: val,
+                      weight: prev.weight === '' ? val : prev.weight
+                    }));
+                  }}
+                  className="w-full text-xs bg-[#FAF8F5] border border-[#EADBC8] text-[#423E3A] placeholder-[#423E3A]/45 rounded-xl px-3 py-2 outline-hidden focus:border-[#B5C9C0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-semibold text-[#423E3A]/60 uppercase tracking-wider mb-1.5 leading-tight">Current Weight (kg)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  required
+                  placeholder="e.g. 40"
+                  value={setupData.weight}
+                  onChange={e => setSetupData({...setupData, weight: e.target.value})}
+                  className="w-full text-xs bg-[#FAF8F5] border border-[#EADBC8] text-[#423E3A] placeholder-[#423E3A]/45 rounded-xl px-3 py-2 outline-hidden focus:border-[#B5C9C0]"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-semibold text-[#423E3A]/60 uppercase tracking-wider mb-1.5 leading-tight">Goal Weight (kg)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  required
+                  placeholder="e.g. 45"
+                  value={setupData.goalWeight}
+                  onChange={e => setSetupData({...setupData, goalWeight: e.target.value})}
+                  className="w-full text-xs bg-[#FAF8F5] border border-[#EADBC8] text-[#423E3A] placeholder-[#423E3A]/45 rounded-xl px-3 py-2 outline-hidden focus:border-[#B5C9C0]"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-[#423E3A]/60 uppercase tracking-wider mb-1.5">Target Calories (kcal)</label>
+                <input
+                  type="number"
+                  required
+                  placeholder="e.g. 1900"
+                  value={setupData.targetCalories}
+                  onChange={e => setSetupData({...setupData, targetCalories: e.target.value})}
+                  className="w-full text-xs bg-[#FAF8F5] border border-[#EADBC8] text-[#423E3A] placeholder-[#423E3A]/45 rounded-xl px-3 py-2 outline-hidden focus:border-[#B5C9C0]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[#423E3A]/60 uppercase tracking-wider mb-1.5">Target Protein (g)</label>
+                <input
+                  type="number"
+                  required
+                  placeholder="e.g. 60"
+                  value={setupData.targetProtein}
+                  onChange={e => setSetupData({...setupData, targetProtein: e.target.value})}
+                  className="w-full text-xs bg-[#FAF8F5] border border-[#EADBC8] text-[#423E3A] placeholder-[#423E3A]/45 rounded-xl px-3 py-2 outline-hidden focus:border-[#B5C9C0]"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full mt-2 bg-[#B5C9C0] border border-[#B5C9C0]/20 text-[#423E3A] font-bold py-3 rounded-2xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md hover:shadow-lg active:scale-98 transition-all"
+            >
+              Start My Journey 🌸
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`min-h-screen bg-cream text-charcoal font-sans selection:bg-rose/30 ${isOnPeriod ? 'period-comfort' : ''}`}>
 
@@ -361,6 +587,7 @@ export default function App() {
         profile={{ ...profile, periods }}
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
+        handleResetData={handleResetData}
       />
 
       {/* Main Layout Area */}
